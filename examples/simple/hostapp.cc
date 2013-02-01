@@ -14,6 +14,9 @@
   #define SCNu8 "hhu"
 #endif
 
+#define VM_MEM_SIZE 300
+#define SOURCE_SIZE 1024
+
 /**
  * Compiler
  */
@@ -21,7 +24,7 @@
 //uint8_t vm_mem[256] = { EMBEDVM_SECT_SRAM_DATA };
 //uint8_t vm_mem[1024] = {0x91, 0x91, 0xb0, 0x9d, 0x91, 0x91, 0x92, 0xb0, 0x9d, 0x92, 0x91, 0x91, 0x93, 0xb0, 0x9d, 0x93, 0x92, 0x91, 0x91, 0x98, 0x04, 0xb0, 0x9d, 0x91, 0xa6, 0x04, 0xa0, 0xfd, 0x9c};
 
-uint8_t vm_mem[1024];
+uint8_t vm_mem[VM_MEM_SIZE];
 uint8_t vm_mem_ptr = 0;
 
 void OP (uint8_t val) { vm_mem[vm_mem_ptr++] = val; }
@@ -33,6 +36,7 @@ void OP (uint8_t val) { vm_mem[vm_mem_ptr++] = val; }
 #define OP_JUMP_8(V) OP(0xa0); OP(V);
 #define OP_RET_VOID() OP(0x9c);
 
+char SOURCE[SOURCE_SIZE] = "";
 
 #include "./compiler.c"
 
@@ -79,26 +83,57 @@ int16_t call_user(uint8_t funcid, uint8_t argc, int16_t *argv, void *ctx)
 	return 0;
 }
 
+int freeRam () {
+  extern int __heap_start, *__brkval; 
+  int v; 
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
+}
+
 void setup()
 {
 	Serial.begin(9600);
 	Serial.println("Initializing...");
 
-	memset(vm_mem, 0, sizeof(vm_mem));
-	compiler();
-
-	/*
-	for (int i = 0; i < 100; i++) {
-		Serial.println(vm_mem[i], HEX);
+	int srci = 0;
+	while (srci < sizeof(SOURCE)) {
+		if (Serial.available() > 0) {
+		  // read the incoming byte:
+		  uint8_t b = Serial.read();
+		  SOURCE[srci++] = b;
+		  if (b == '\0') {
+		  	break;
+		  }
+		}
 	}
-	while (true) { }
-		*/
 
-	vm.ip = EMBEDVM_SYM_main;
-	vm.sp = vm.sfp = sizeof(vm_mem);
-	vm.mem_read = &mem_read;
-	vm.mem_write = &mem_write;
-	vm.call_user = &call_user;
+	Serial.print("Downloaded ");
+	Serial.print(srci, DEC);
+	Serial.println(" bytes.");
+	Serial.println(SOURCE);
+	Serial.print("Free RAM:");
+	Serial.println(freeRam());
+	Serial.println("");
+
+	delay(1000);
+
+	if (compiler()) {
+		Serial.println("Error compiling.");
+	} else {
+		Serial.println("Success compiling.");
+		for (int i = 0; i < vm_mem_ptr; i++) {
+			Serial.print("0x");
+			Serial.print(vm_mem[i], HEX);
+			Serial.print(" ");
+		}
+		Serial.println("");
+		Serial.println("");
+
+		vm.ip = EMBEDVM_SYM_main;
+		vm.sp = vm.sfp = sizeof(vm_mem);
+		vm.mem_read = &mem_read;
+		vm.mem_write = &mem_write;
+		vm.call_user = &call_user;
+	}
 }
 
 void loop()
@@ -106,6 +141,7 @@ void loop()
 	// Serial.print("<");
 	// Serial.print(vm.ip, DEC);
 	// Serial.print(">");
+
 	embedvm_exec(&vm);
 }
 

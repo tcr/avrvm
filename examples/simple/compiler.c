@@ -1,45 +1,65 @@
-char* SOURCE = "function main() {\n\
-  $uf0(1);\n\
-  $uf0(1, 1);\n\
-  $uf0(1, 1, 2);\n\
-  $uf0(1, 1, 2, 3);\n\
-  while (true) { }\n\
-}";
+
 
 #define isalnums(S) (isalnum(S) || S == '$')
 #define MATCH_STR(S, V) (strncmp(S, V, sizeof(S) - 1) == 0)
-#define MATCH_KEYWORD(S) (strncmp(S, &SOURCE[i], sizeof(S) - 1) == 0) && !isalnums(SOURCE[i + sizeof(S) - 1]) && ((i += sizeof(S) - 1), 1)
-#define MATCH_CHAR(C) ((SOURCE[i] == C) && ((i += 1), 1))
-#define MATCH_WHITESPACE() isspace(SOURCE[i]) && (i++, 1)
-#define MATCH_TOKEN(P, L) P = &SOURCE[i], *(L) = 0; \
-  while (isalnums(SOURCE[i])) i++, *(L) += 1;
-#define REQUIRE(A) if (!(A)) return printf("Failed condition.\n"), i;
+#define MATCH_KEYWORD(S) (strncmp(S, &SOURCE[*i], sizeof(S) - 1) == 0) && !isalnums(SOURCE[*i + sizeof(S) - 1]) && ((*i += sizeof(S) - 1), 1)
+#define MATCH_CHAR(C) ((SOURCE[*i] == C) && ((*i += 1), 1))
+#define MATCH_WHITESPACE() while (isspace(SOURCE[*i])) { *i += 1; }
+#define MATCH_TOKEN(P, L) P = &SOURCE[*i], *(L) = 0; \
+  while (isalnums(SOURCE[*i])) (*i += 1), *(L) += 1;
+#define REQUIRE(A) if (!(A)) return printf("Failed condition.\n"), 1;
 
+uint16_t compile_expression (uint16_t *i, uint16_t totallen)
+{
+  while (*i <= totallen) {
+    MATCH_WHITESPACE();
 
-uint16_t compile_statement (uint16_t i, uint16_t totallen) {
-  while (i < totallen) {
-    if (MATCH_WHITESPACE()) {
-      continue;
+    // true
+    if (MATCH_KEYWORD("true")) {
+      OP_PUSH_U3(1);
+      return 0;
     }
 
+    // Numbers
+    uint8_t arg;
+    int consumed = 0;
+    if (sscanf(&SOURCE[*i], "%" SCNu8 "%n", &arg, &consumed) != 0) {
+      if (arg <= 0x7) {
+        OP_PUSH_U3(arg);
+      } else {
+        OP_PUSH_U8(arg);
+      }
+      *i += consumed;
+      return 0;
+    }
+
+    break;
+  }
+  return 1;
+}
+
+int compile_statement (uint16_t *i, uint16_t totallen)
+{
+  while (*i <= totallen) {
+    MATCH_WHITESPACE();
+
     if (MATCH_KEYWORD("while")) {
-      while (MATCH_WHITESPACE()) { }
+      MATCH_WHITESPACE();
       REQUIRE(MATCH_CHAR('('));
 
-      while (MATCH_WHITESPACE()) { }
-      if (MATCH_KEYWORD("true")) {
-        OP_PUSH_U3(1);
+      if (compile_expression(i, totallen)) {
+        return 1;
       }
 
       OP_JUNLESS_8(0x04);
 
-      while (MATCH_WHITESPACE()) { }
+      MATCH_WHITESPACE();
       REQUIRE(MATCH_CHAR(')'));
 
-      while (MATCH_WHITESPACE()) { }
+      MATCH_WHITESPACE();
       REQUIRE(MATCH_CHAR('{'));
 
-      while (MATCH_WHITESPACE()) { }
+      MATCH_WHITESPACE();
       REQUIRE(MATCH_CHAR('}'));
 
       OP_JUMP_8(0xfd);
@@ -52,29 +72,20 @@ uint16_t compile_statement (uint16_t i, uint16_t totallen) {
     uint16_t len = 0;
     MATCH_TOKEN(name, &len);
     if (len > 0) {
-
-      while (MATCH_WHITESPACE()) { }
+      MATCH_WHITESPACE();
       REQUIRE(MATCH_CHAR('('));
 
       /* read arguments */
       uint8_t argc = 0;
-      while (SOURCE[i] != ')') {
-        while (MATCH_WHITESPACE()) { }
+      while (1) {
+        MATCH_WHITESPACE();
 
-        uint8_t arg;
-        int consumed = 0;
-        if (sscanf(&SOURCE[i], "%" SCNu8 "%n", &arg, &consumed) == 0) {
+        if (compile_expression(i, totallen)) {
           break;
         }
-        if (arg <= 0x7) {
-          OP_PUSH_U3(arg);
-        } else {
-          OP_PUSH_U8(arg);
-        }
-        i += consumed;
         argc++;
 
-        while (MATCH_WHITESPACE()) { }
+        MATCH_WHITESPACE();
         if (!MATCH_CHAR(',')) {
           break;
         }
@@ -84,7 +95,7 @@ uint16_t compile_statement (uint16_t i, uint16_t totallen) {
 
       REQUIRE(MATCH_CHAR(')'));
 
-      while (MATCH_WHITESPACE()) { }
+      MATCH_WHITESPACE();
       REQUIRE(MATCH_CHAR(';'));
 
       uint8_t ufid;
@@ -97,19 +108,23 @@ uint16_t compile_statement (uint16_t i, uint16_t totallen) {
     }
 
     //printf("Unmatched char: \"%c\" (%d) at char %d\n", SOURCE[i], SOURCE[i], i);
-    return i;
+    break;
   }
+  return 1;
 }
 
-uint16_t compile_global (uint16_t i, uint16_t totallen) {
-  while (i < totallen) {
-
-    if (MATCH_WHITESPACE()) {
-      continue;
+int compile_global (uint16_t *i, uint16_t totallen)
+{
+  while (*i <= totallen) {
+    // Null. Terminate happily
+    if (SOURCE[*i] == '\0') {
+      return 0;
     }
 
+    MATCH_WHITESPACE();
+
     if (MATCH_KEYWORD("function")) {
-      while (MATCH_WHITESPACE()) { }
+      MATCH_WHITESPACE();
 
       // Function name
       char *name;
@@ -117,14 +132,16 @@ uint16_t compile_global (uint16_t i, uint16_t totallen) {
       MATCH_TOKEN(name, &len);
 
       // Parens
-      while (MATCH_WHITESPACE()) { }
-      i++; i++;
+      MATCH_WHITESPACE();
+      REQUIRE(MATCH_CHAR('('));
+      MATCH_WHITESPACE();
+      REQUIRE(MATCH_CHAR(')'));
 
       // Braces
-      while (MATCH_WHITESPACE()) { }
+      MATCH_WHITESPACE();
       REQUIRE(MATCH_CHAR('{'));
 
-      i = compile_statement(i, totallen);
+      compile_statement(i, totallen);
 
       REQUIRE(MATCH_CHAR('}'));
       OP_RET_VOID();
@@ -132,15 +149,13 @@ uint16_t compile_global (uint16_t i, uint16_t totallen) {
       continue;
     }
 
-    return i;
+    break;
   }
-
-  // Null. Terminate happily
-  return i;
+  return 1;
 }
 
 int compiler () {
-  uint16_t len = strlen(SOURCE);
-  uint16_t i = compile_global(0, len);
-  return i == len;
+  uint16_t len = strnlen(SOURCE, 256);
+  uint16_t i = 0;
+  return compile_global(&i, len);
 }

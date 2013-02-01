@@ -15,13 +15,23 @@
 /* </debug */
 
 
+/*
+char* SOURCE = "function main() {\n\
+  $uf0(1);\n\
+  $uf0(1, 1);\n\
+  $uf0(1, 1, 2);\n\
+  $uf0(1, 1, 2, 3);\n\
+  while (true) { }\n\
+}";
+*/
 
+char* SOURCE = "function main() { $uf0(9); while (true) { } }";
 
 #include "./compiler.c"
 
 
 int main () {
-  if (compiler()) {
+  if (!compiler()) {
     printf("Successful compilation.\n");
     return 0;
   } else {
