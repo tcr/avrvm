@@ -65,6 +65,16 @@ Most instructions fit in a single byte. Some have a 1 or 2 bytes argument.
 Some instructions push and/or pop values to/from the stack.
 Not all of the instructions are actually used by the compiler.
 
+0x98, 0x05, 0x91, 0xb0, 0x9d, 0x91, 0xa6, 0x04, 0xa0, 0xfd, 0x9c
+
+Push unsigned 1-byte argument: 0x05
+Push Immediate 0x01)
+call user function.
+
+drop erturn value
+JUMP 0xfd (signed)
+return sans value
+
 +-------------------------------+----------------------------------------+----+
 | MSB                       LSB |                            Instruction | Off|
 +---+---+---+---+---+---+---+---+----------------------------------------+----+

@@ -1,0 +1,7 @@
+0000 g (data)
+0002 a8u (data)
+0005 a8s (data)
+0008 a16 (data)
+000E print (code)
+0030 main (code)
+00E4 _end (other)

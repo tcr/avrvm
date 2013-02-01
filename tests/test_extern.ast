@@ -1,0 +1,67 @@
+                LEFT 0x7f8340c03b40 @ 0000 0000:
+               LEFT 0x7f8340c03c10 @ 0000 0000:
+              LEFT 0x7f8340c03ce0 @ 0000 0000:
+             LEFT 0x7f8340c03db0 @ 0000 0000:
+            LEFT 0x7f8340c03f30 @ 0000 0000:
+           LEFT 0x7f8340c047b0 @ 0000 0000:
+             LEFT 0x7f8340c046f0 @ 0000 0000:
+               LEFT 0x7f8340c04420 @ 0000 0000:
+                     LEFT 0x7f8340c042a0 @ 0000 0000: op=98 arg=04
+                    LEFT 0x7f8340c042e0 @ 0000 0002: op=e4 arg=0200 argaddr=0x7f8340c03d30
+                   LEFT 0x7f8340c04320 @ 0000 0005:
+                      LEFT 0x7f8340c041d0 @ 0005 0005: op=93
+                     LEFT 0x7f8340c04210 @ 0005 0006: op=e4 arg=0200 argaddr=0x7f8340c03d30
+                    RIGHT 0x7f8340c04250 @ 0005 0009:
+                       LEFT 0x7f8340c04100 @ 0009 0009: op=92
+                      LEFT 0x7f8340c04140 @ 0009 000a: op=e4 arg=0200 argaddr=0x7f8340c03d30
+                     RIGHT 0x7f8340c04180 @ 0009 000d:
+                        LEFT 0x7f8340c04030 @ 000d 000d: op=91
+                       LEFT 0x7f8340c04070 @ 000d 000e: op=e4 arg=0200 argaddr=0x7f8340c03d30
+                      RIGHT 0x7f8340c040b0 @ 000d 0011:
+                        LEFT 0x7f8340c03f90 @ 0011 0011: op=90
+                       RIGHT 0x7f8340c03fd0 @ 0011 0012: op=e4 arg=0200 argaddr=0x7f8340c03d30
+                  LEFT 0x7f8340c04360 @ 0000 0015: op=98 arg=05
+                 LEFT 0x7f8340c043a0 @ 0000 0017: op=b1
+                RIGHT 0x7f8340c043e0 @ 0000 0018: op=9d
+              RIGHT 0x7f8340c046b0 @ 0000 0019:
+                  LEFT 0x7f8340c04570 @ 0019 0019: op=e1 arg=0120 argaddr=0x7f8340c03c60
+                 LEFT 0x7f8340c045b0 @ 0019 001c:
+                   LEFT 0x7f8340c044e0 @ 001c 001c: op=e1 arg=0110 argaddr=0x7f8340c03b90
+                  RIGHT 0x7f8340c04520 @ 001c 001f:
+                   RIGHT 0x7f8340c04480 @ 001f 001f: op=e1 arg=0100 argaddr=0x7f8340c03ac0
+                LEFT 0x7f8340c04630 @ 0019 0022: op=a3 arg=02de rel argaddr=0x7f8340c03ef0
+                 RIGHT 0x7f8340c045f0 @ 0025 0025: op=fa
+               RIGHT 0x7f8340c04670 @ 0019 0026: op=9d
+            RIGHT 0x7f8340c04730 @ 0000 0027: sym=main op=9c
+          LEFT 0x7f8340c048b0 @ 0000 0028:
+           RIGHT 0x7f8340c047f0 @ 0100 0100: sym=_memaddr_0100 setaddr=0100
+         LEFT 0x7f8340c04990 @ 0000 0100:
+          RIGHT 0x7f8340c04910 @ 0100 0100: sym=direct_gvar datalen=2 initdata=0064
+        LEFT 0x7f8340c04a90 @ 0000 0102:
+         RIGHT 0x7f8340c049d0 @ 0110 0110: sym=_memaddr_0110 setaddr=0110
+       LEFT 0x7f8340c04b70 @ 0000 0110:
+        RIGHT 0x7f8340c04af0 @ 0110 0110: sym=direct_gvar8u datalen=2 initdata=00c8
+      LEFT 0x7f8340c04c70 @ 0000 0112:
+       RIGHT 0x7f8340c04bb0 @ 0120 0120: sym=_memaddr_0120 setaddr=0120
+     LEFT 0x7f8340c04d50 @ 0000 0120:
+      RIGHT 0x7f8340c04cd0 @ 0120 0120: sym=direct_gvar8s datalen=2 initdata=ff9c
+    LEFT 0x7f8340c04e50 @ 0000 0122:
+     RIGHT 0x7f8340c04d90 @ 0200 0200: sym=_memaddr_0200 setaddr=0200
+   LEFT 0x7f8340c05030 @ 0000 0200:
+    RIGHT 0x7f8340c04fa0 @ 0200 0200: sym=direct_ga16 datalen=10 initdata=00010002000300040005
+  LEFT 0x7f8340c05130 @ 0000 020a:
+   RIGHT 0x7f8340c05070 @ 0300 0300: sym=_memaddr_0300 setaddr=0300
+ LEFT 0x7f8340c05580 @ 0000 0300:
+   LEFT 0x7f8340c054c0 @ 0300 0300:
+    RIGHT 0x7f8340c05480 @ 0300 0300:
+         LEFT 0x7f8340c05340 @ 0300 0300: op=3d
+        LEFT 0x7f8340c05380 @ 0300 0301:
+          LEFT 0x7f8340c052b0 @ 0301 0301: op=3e
+         RIGHT 0x7f8340c052f0 @ 0301 0302:
+          RIGHT 0x7f8340c05250 @ 0302 0302: op=3f
+       LEFT 0x7f8340c053c0 @ 0300 0303: op=93
+      LEFT 0x7f8340c05400 @ 0300 0304: op=b2
+     RIGHT 0x7f8340c05440 @ 0300 0305: op=9d
+  RIGHT 0x7f8340c05500 @ 0300 0306: sym=direct_extfunct op=9c
+ROOT 0x7f8340c055c0 @ 0000 0307:
+ RIGHT 0x7f8340c03a20 @ 0307 0307: sym=_end

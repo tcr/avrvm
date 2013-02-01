@@ -1,0 +1,46 @@
+ LEFT 0x7fb7cb404570 @ 0000 0000:
+   LEFT 0x7fb7cb4044b0 @ 0000 0000:
+        LEFT 0x7fb7cb403b20 @ 0000 0000:
+            LEFT 0x7fb7cb403a10 @ 0000 0000: op=91
+           LEFT 0x7fb7cb403a60 @ 0000 0001: op=91
+          LEFT 0x7fb7cb403aa0 @ 0000 0002: op=b0
+         RIGHT 0x7fb7cb403ae0 @ 0000 0003: op=9d
+       LEFT 0x7fb7cb403cf0 @ 0000 0004:
+            LEFT 0x7fb7cb403bb0 @ 0004 0004: op=91
+           LEFT 0x7fb7cb403bf0 @ 0004 0005:
+            RIGHT 0x7fb7cb403b60 @ 0005 0005: op=91
+          LEFT 0x7fb7cb403c30 @ 0004 0006: op=92
+         LEFT 0x7fb7cb403c70 @ 0004 0007: op=b0
+        RIGHT 0x7fb7cb403cb0 @ 0004 0008: op=9d
+      LEFT 0x7fb7cb403f40 @ 0000 0009:
+           LEFT 0x7fb7cb403e00 @ 0009 0009: op=92
+          LEFT 0x7fb7cb403e40 @ 0009 000a:
+            LEFT 0x7fb7cb403d80 @ 000a 000a: op=91
+           RIGHT 0x7fb7cb403dc0 @ 000a 000b:
+            RIGHT 0x7fb7cb403d30 @ 000b 000b: op=91
+         LEFT 0x7fb7cb403e80 @ 0009 000c: op=93
+        LEFT 0x7fb7cb403ec0 @ 0009 000d: op=b0
+       RIGHT 0x7fb7cb403f00 @ 0009 000e: op=9d
+     LEFT 0x7fb7cb404210 @ 0000 000f:
+          LEFT 0x7fb7cb4040d0 @ 000f 000f: op=93
+         LEFT 0x7fb7cb404110 @ 000f 0010:
+           LEFT 0x7fb7cb404050 @ 0010 0010: op=92
+          RIGHT 0x7fb7cb404090 @ 0010 0011:
+            LEFT 0x7fb7cb403fd0 @ 0011 0011: op=91
+           RIGHT 0x7fb7cb404010 @ 0011 0012:
+            RIGHT 0x7fb7cb403f80 @ 0012 0012: op=91
+        LEFT 0x7fb7cb404150 @ 000f 0013: op=98 arg=04
+       LEFT 0x7fb7cb404190 @ 000f 0015: op=b0
+      RIGHT 0x7fb7cb4041d0 @ 000f 0016: op=9d
+    RIGHT 0x7fb7cb404470 @ 0000 0017:
+       LEFT 0x7fb7cb4042f0 @ 0017 0017:
+      LEFT 0x7fb7cb4043f0 @ 0017 0017:
+        LEFT 0x7fb7cb404250 @ 0017 0017: op=91
+       RIGHT 0x7fb7cb4043b0 @ 0017 0018: op=a6 arg=04 rel argaddr=0x7fb7cb404330
+        RIGHT 0x7fb7cb404370 @ 001a 001a: op=a0 arg=fd rel argaddr=0x7fb7cb404250
+         RIGHT 0x7fb7cb404330 @ 001c 001c:
+     RIGHT 0x7fb7cb404430 @ 0017 001c:
+      RIGHT 0x7fb7cb4042b0 @ 001c 001c:
+  RIGHT 0x7fb7cb4044f0 @ 0000 001c: sym=main op=9c
+ROOT 0x7fb7cb404600 @ 0000 001d:
+ RIGHT 0x7fb7cb4045b0 @ 001d 001d: sym=_end

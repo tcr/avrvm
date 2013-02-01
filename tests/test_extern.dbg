@@ -1,0 +1,27 @@
+
+Total code and data length: 775
+
+main @ 0000: 98.04 E4.0200a 93 E4.0200a 92 E4.0200a 91 E4.0200a 90 E4.0200a 98.05 B1 9D E1.0120a E1.0110a E1.0100a A3.02DEr FA 9D 9C
+
+_memaddr_0100 @ 0100:
+
+direct_gvar @ 0100: D[2]=0064
+
+_memaddr_0110 @ 0110:
+
+direct_gvar8u @ 0110: D[2]=00C8
+
+_memaddr_0120 @ 0120:
+
+direct_gvar8s @ 0120: D[2]=FF9C
+
+_memaddr_0200 @ 0200:
+
+direct_ga16 @ 0200: D[10]=00010002000300040005
+
+_memaddr_0300 @ 0300:
+
+direct_extfunct @ 0300: 3D 3E 3F 93 B2 9D 9C
+
+_end @ 0307:
+
