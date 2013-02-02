@@ -8,10 +8,29 @@
 #define UNUSED __attribute__((unused))
 
 #ifndef SCNd8
-  #define SCNd8 "hhd"
+#  define SCNd8 "hhd"
 #endif
+#ifndef SCNd16
+#  define SCNd16 "hd"
+#endif
+#ifndef SCNd32
+#  define SCNd32 "d"
+#endif
+#ifndef SCNd64
+#  define SCNd64 PRI64_PREFIX "d"
+#endif
+
 #ifndef SCNu8
-  #define SCNu8 "hhu"
+#  define SCNu8 "hhu"
+#endif
+#ifndef SCNu16
+#  define SCNu16 "hu"
+#endif
+#ifndef SCNu32
+#  define SCNu32 "u"
+#endif
+#ifndef SCNu64
+#  define SCNu64 PRI64_PREFIX "u"
 #endif
 
 #define VM_MEM_SIZE 300
@@ -28,6 +47,7 @@ uint8_t vm_mem[VM_MEM_SIZE];
 uint8_t vm_mem_ptr = 0;
 
 void OP (uint8_t val) { vm_mem[vm_mem_ptr++] = val; }
+#define OP_PUSH_16(V) OP(0x9a); OP(V >> 8); OP(V & 0xff);
 #define OP_PUSH_U8(V) OP(0x98); OP(V);
 #define OP_PUSH_U3(V) OP(0x90 + (0x07 & V));
 #define OP_USERFUNC(V) OP(0xb0 + (0x0f & V));
@@ -71,15 +91,33 @@ void mem_write(uint16_t addr, int16_t value, bool is16bit, void *ctx)
 
 int16_t call_user(uint8_t funcid, uint8_t argc, int16_t *argv, void *ctx)
 {
-	Serial.print("Called user function ");
-	Serial.print(funcid);
-	Serial.print(" with args: ");
-	Serial.println(argc);
+	switch (funcid) {
+		case 0:
+			Serial.print("Called user function ");
+			Serial.print(funcid);
+			Serial.print(" with args: ");
+			Serial.println(argc);
 
-	for (int i = 0; i < argc; i++) {
-		Serial.println(argv[i], DEC);
+			for (int i = 0; i < argc; i++) {
+				Serial.println(argv[i], DEC);
+			}
+
+			return 0;
+
+		case 1:
+			Serial.print("digitalWrite pin: ");
+			Serial.print(argv[0]);
+			Serial.print(" val: ");
+			Serial.println(argv[1]);
+			digitalWrite(argv[0], argv[1] > 0 ? HIGH : LOW);   // sets the LED on
+			return 0;
+
+		case 2:
+			Serial.print("delay: ");
+			Serial.println(argv[0]);
+  		delay(argv[0]);
+  		return 0;
 	}
-
 	return 0;
 }
 
@@ -91,6 +129,8 @@ int freeRam () {
 
 void setup()
 {
+	pinMode(13, OUTPUT);      // sets the digital pin as output
+
 	Serial.begin(9600);
 	Serial.println("Initializing...");
 

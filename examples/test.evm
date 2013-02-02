@@ -1,0 +1,7 @@
+function main() {
+  $uf2(1000);
+  $uf1(13, 1);
+  $uf2(1000);
+  $uf1(13, 0);
+  while (true) { }
+}

@@ -5,12 +5,9 @@ var sp = new SerialPort("/dev/tty.usbmodem1411", {
   parser: serialport.parsers.readline("\n") 
 });
 
-var src = 'function main() {\n\
-  $uf0(1, 3);\n\
-  while (true) { }\n\
-}';
+var src = require('fs').readFileSync(__dirname + '/../test.evm', 'utf-8');
 
-if (src.length > 256) {
+if (src.length > 1024) {
   console.error('Source too long:', src.length);
   process.exit(1);
 }

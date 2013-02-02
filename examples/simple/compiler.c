@@ -9,27 +9,45 @@
   while (isalnums(SOURCE[*i])) (*i += 1), *(L) += 1;
 #define REQUIRE(A) if (!(A)) return printf("Failed condition.\n"), 1;
 
-uint16_t compile_expression (uint16_t *i, uint16_t totallen)
+uint8_t compile_expression (uint16_t *i, uint16_t totallen, uint8_t *argc);
+
+uint8_t compile_chain (uint16_t *i, uint16_t totallen, uint8_t *argc)
+{
+  if (argc != NULL) {
+    (*argc)++;
+    MATCH_WHITESPACE();
+    if (MATCH_CHAR(',')) {
+      return compile_expression(i, totallen, argc);
+    }
+  }
+  return 0;
+}
+
+uint8_t compile_expression (uint16_t *i, uint16_t totallen, uint8_t *argc)
 {
   while (*i <= totallen) {
     MATCH_WHITESPACE();
 
     // true
     if (MATCH_KEYWORD("true")) {
+      compile_chain(i, totallen, argc);
       OP_PUSH_U3(1);
       return 0;
     }
 
     // Numbers
-    uint8_t arg;
+    int16_t arg;
     int consumed = 0;
-    if (sscanf(&SOURCE[*i], "%" SCNu8 "%n", &arg, &consumed) != 0) {
-      if (arg <= 0x7) {
-        OP_PUSH_U3(arg);
-      } else {
-        OP_PUSH_U8(arg);
-      }
+    if (sscanf(&SOURCE[*i], "%" SCNd16 "%n", &arg, &consumed) != 0) {
       *i += consumed;
+      compile_chain(i, totallen, argc);
+      if (arg <= 0x7 && arg >= 0x0) {
+        OP_PUSH_U3((uint8_t) arg);
+      } else if (arg <= 0xff && arg >= 0) {
+        OP_PUSH_U8((uint8_t) arg);
+      } else {
+        OP_PUSH_16(arg);
+      }
       return 0;
     }
 
@@ -38,7 +56,7 @@ uint16_t compile_expression (uint16_t *i, uint16_t totallen)
   return 1;
 }
 
-int compile_statement (uint16_t *i, uint16_t totallen)
+uint8_t compile_statement (uint16_t *i, uint16_t totallen)
 {
   while (*i <= totallen) {
     MATCH_WHITESPACE();
@@ -47,7 +65,7 @@ int compile_statement (uint16_t *i, uint16_t totallen)
       MATCH_WHITESPACE();
       REQUIRE(MATCH_CHAR('('));
 
-      if (compile_expression(i, totallen)) {
+      if (compile_expression(i, totallen, NULL)) {
         return 1;
       }
 
@@ -77,18 +95,9 @@ int compile_statement (uint16_t *i, uint16_t totallen)
 
       /* read arguments */
       uint8_t argc = 0;
-      while (1) {
-        MATCH_WHITESPACE();
-
-        if (compile_expression(i, totallen)) {
-          break;
-        }
-        argc++;
-
-        MATCH_WHITESPACE();
-        if (!MATCH_CHAR(',')) {
-          break;
-        }
+      MATCH_WHITESPACE();
+      if (compile_expression(i, totallen, &argc) != 0) {
+        break;
       }
       // Argument count.
       OP_PUSH_U8(argc);
@@ -113,7 +122,7 @@ int compile_statement (uint16_t *i, uint16_t totallen)
   return 1;
 }
 
-int compile_global (uint16_t *i, uint16_t totallen)
+uint8_t compile_global (uint16_t *i, uint16_t totallen)
 {
   while (*i <= totallen) {
     // Null. Terminate happily
