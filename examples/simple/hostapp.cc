@@ -34,7 +34,7 @@
 #endif
 
 #define VM_MEM_SIZE 300
-#define SOURCE_SIZE 1024
+#define SOURCE_SIZE 512
 
 /**
  * Compiler
@@ -47,6 +47,9 @@ uint8_t vm_mem[VM_MEM_SIZE];
 uint8_t vm_mem_ptr = 0;
 
 void OP (uint8_t val) { vm_mem[vm_mem_ptr++] = val; }
+#define OP_POP_LOCAL(V) OP(0x00 + (0x3f & V));
+#define OP_PUSH_LOCAL(V) OP(0x40 + (0x3f & V));
+#define OP_PUSH_ZEROES(V) OP(0xf0 + ((V - 1) & 0xf)); // TODO split > 7
 #define OP_PUSH_16(V) OP(0x9a); OP(V >> 8); OP(V & 0xff);
 #define OP_PUSH_U8(V) OP(0x98); OP(V);
 #define OP_PUSH_U3(V) OP(0x90 + (0x07 & V));
@@ -105,6 +108,13 @@ int16_t call_user(uint8_t funcid, uint8_t argc, int16_t *argv, void *ctx)
 			return 0;
 
 		case 1:
+			for (int i = 0; i < argc; i++) {
+				Serial.print((char) argv[i]);
+			}
+			Serial.flush();
+			return 0;
+
+		case 2:
 			Serial.print("digitalWrite pin: ");
 			Serial.print(argv[0]);
 			Serial.print(" val: ");
@@ -112,7 +122,7 @@ int16_t call_user(uint8_t funcid, uint8_t argc, int16_t *argv, void *ctx)
 			digitalWrite(argv[0], argv[1] > 0 ? HIGH : LOW);   // sets the LED on
 			return 0;
 
-		case 2:
+		case 3:
 			Serial.print("delay: ");
 			Serial.println(argv[0]);
   		delay(argv[0]);
@@ -155,11 +165,15 @@ void setup()
 	Serial.println("");
 
 	delay(1000);
+	Serial.flush();
 
 	if (compiler()) {
 		Serial.println("Error compiling.");
+		while (true) { }
 	} else {
-		Serial.println("Success compiling.");
+		Serial.print("Success compiling (");
+		Serial.print(vm_mem_ptr, DEC);
+		Serial.println(" bytes)");
 		for (int i = 0; i < vm_mem_ptr; i++) {
 			Serial.print("0x");
 			Serial.print(vm_mem[i], HEX);

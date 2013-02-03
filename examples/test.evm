@@ -1,7 +1,5 @@
 function main() {
-  $uf2(1000);
-  $uf1(13, 1);
-  $uf2(1000);
-  $uf1(13, 0);
+  local i;
+  $uf0(i);
   while (true) { }
 }

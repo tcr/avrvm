@@ -5,4 +5,4 @@ make -C ../../tools
 ln -sf ../../vmsrc/embedvm.c embedvm.c
 ln -sf ../../vmsrc/embedvm.h embedvm.h
 #gcc -o localversion localversion.c embedvm.c
-./arduino-cc.sh -o firmware hostapp.cc embedvm.c
+./arduino-cc.sh -o firmware hostapp.cc  embedvm.c

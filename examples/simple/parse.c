@@ -5,6 +5,9 @@
 #include <inttypes.h>
 
 /* debug */
+#define OP_POP_LOCAL(V) printf("OP_POP_LOCAL %d\n", V);
+#define OP_PUSH_LOCAL(V) printf("OP_PUSH_LOCAL %d\n", V);
+#define OP_PUSH_ZEROES(V) printf("OP_PUSH_ZEROES %d\n", V);
 #define OP_PUSH_16(V) printf("OP_PUSH_16 %d\n", V);
 #define OP_PUSH_U8(V) printf("OP_PUSH_U8 %d\n", V);
 #define OP_PUSH_U3(V) printf("OP_PUSH_U3 %d\n", V);

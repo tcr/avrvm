@@ -1,7 +1,7 @@
 
-Total code and data length: 29
+Total code and data length: 11
 
-main @ 0000: 91 91 B0 9D 91 91 92 B0 9D 92 91 91 93 B0 9D 93 92 91 91 98.04 B0 9D 91 A6.04r A0.FDr 9C
+main @ 0000: F0 00 91 B0 9D 91 A6.04r A0.FDr 9C
 
-_end @ 001D:
+_end @ 000B:
 
