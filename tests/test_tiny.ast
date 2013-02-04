@@ -1,20 +1,24 @@
- LEFT 0x7fcb12403f10 @ 0000 0000:
-    LEFT 0x7fcb12403e10 @ 0000 0000: op=f0
-   LEFT 0x7fcb12403e50 @ 0000 0001:
-     LEFT 0x7fcb12403b70 @ 0001 0001:
-         LEFT 0x7fcb12403a60 @ 0001 0001: op=00
-        LEFT 0x7fcb12403ab0 @ 0001 0002: op=91
-       LEFT 0x7fcb12403af0 @ 0001 0003: op=b0
-      RIGHT 0x7fcb12403b30 @ 0001 0004: op=9d
-    RIGHT 0x7fcb12403dd0 @ 0001 0005:
-       LEFT 0x7fcb12403c50 @ 0005 0005:
-      LEFT 0x7fcb12403d50 @ 0005 0005:
-        LEFT 0x7fcb12403bb0 @ 0005 0005: op=91
-       RIGHT 0x7fcb12403d10 @ 0005 0006: op=a6 arg=04 rel argaddr=0x7fcb12403c90
-        RIGHT 0x7fcb12403cd0 @ 0008 0008: op=a0 arg=fd rel argaddr=0x7fcb12403bb0
-         RIGHT 0x7fcb12403c90 @ 000a 000a:
-     RIGHT 0x7fcb12403d90 @ 0005 000a:
-      RIGHT 0x7fcb12403c10 @ 000a 000a:
-  RIGHT 0x7fcb12403e90 @ 0000 000a: sym=main op=9c
-ROOT 0x7fcb12403fa0 @ 0000 000b:
- RIGHT 0x7fcb12403f50 @ 000b 000b: sym=_end
+ LEFT 0x7fce5a403fc0 @ 0000 0000:
+   LEFT 0x7fce5a403f00 @ 0000 0000:
+     LEFT 0x7fce5a403db0 @ 0000 0000:
+          LEFT 0x7fce5a403c70 @ 0000 0000: op=98 arg=06
+         LEFT 0x7fce5a403cb0 @ 0000 0002:
+              LEFT 0x7fce5a403b30 @ 0002 0002: op=98 arg=07
+             LEFT 0x7fce5a403b70 @ 0002 0004:
+               LEFT 0x7fce5a403ab0 @ 0004 0004: op=98 arg=06
+              RIGHT 0x7fce5a403af0 @ 0004 0006:
+               RIGHT 0x7fce5a403a60 @ 0006 0006: op=98 arg=05
+            LEFT 0x7fce5a403bb0 @ 0002 0008: op=93
+           LEFT 0x7fce5a403bf0 @ 0002 0009: op=b1
+          RIGHT 0x7fce5a403c30 @ 0002 000a:
+           RIGHT 0x7fce5a403a10 @ 000a 000a: op=91
+        LEFT 0x7fce5a403cf0 @ 0000 000b: op=93
+       LEFT 0x7fce5a403d30 @ 0000 000c: op=b1
+      RIGHT 0x7fce5a403d70 @ 0000 000d: op=9d
+    RIGHT 0x7fce5a403ec0 @ 0000 000e:
+       LEFT 0x7fce5a403e00 @ 000e 000e: op=90
+      LEFT 0x7fce5a403e40 @ 000e 000f: op=b0
+     RIGHT 0x7fce5a403e80 @ 000e 0010: op=9d
+  RIGHT 0x7fce5a403f40 @ 0000 0011: sym=main op=9c
+ROOT 0x7fce5a404050 @ 0000 0012:
+ RIGHT 0x7fce5a404000 @ 0012 0012: sym=_end

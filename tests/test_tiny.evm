@@ -1,5 +1,4 @@
 function main() {
-  local i;
-  i = 0;
-  while (true) { }
+  $uf1(1, $uf1(5, 6, 7), 6);
+  $uf0();
 }

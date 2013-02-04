@@ -6,6 +6,7 @@
 #include "vmcode.hdr"
 
 #define UNUSED __attribute__((unused))
+#define F(string_literal) (reinterpret_cast<const __FlashStringHelper *>(PSTR(string_literal)))
 
 #ifndef SCNd8
 #  define SCNd8 "hhd"
@@ -33,8 +34,8 @@
 #  define SCNu64 PRI64_PREFIX "u"
 #endif
 
-#define VM_MEM_SIZE 300
-#define SOURCE_SIZE 512
+#define VM_MEM_SIZE 100
+#define SOURCE_SIZE 600
 
 /**
  * Compiler
@@ -47,8 +48,9 @@ uint8_t vm_mem[VM_MEM_SIZE];
 uint8_t vm_mem_ptr = 0;
 
 void OP (uint8_t val) { vm_mem[vm_mem_ptr++] = val; }
-#define OP_POP_LOCAL(V) OP(0x00 + (0x3f & V));
-#define OP_PUSH_LOCAL(V) OP(0x40 + (0x3f & V));
+#define OP_DUP(V) OP(0xc0 + (V & 0x07) + 0x05) // TODO V <= 5
+#define OP_PUSH_LOCAL(V) OP(0x00 + (0x3f & V));
+#define OP_POP_LOCAL(V) OP(0x40 + (0x3f & V));
 #define OP_PUSH_ZEROES(V) OP(0xf0 + ((V - 1) & 0xf)); // TODO split > 7
 #define OP_PUSH_16(V) OP(0x9a); OP(V >> 8); OP(V & 0xff);
 #define OP_PUSH_U8(V) OP(0x98); OP(V);
@@ -69,6 +71,12 @@ char SOURCE[SOURCE_SIZE] = "";
 /**
  * VM Start
  */
+
+int freeRam () {
+  extern int __heap_start, *__brkval; 
+  int v; 
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
+}
 
 struct embedvm_s vm = { };
 
@@ -96,9 +104,17 @@ int16_t call_user(uint8_t funcid, uint8_t argc, int16_t *argv, void *ctx)
 {
 	switch (funcid) {
 		case 0:
-			Serial.print("Called user function ");
+			Serial.println("");
+			Serial.print(F("[[eof, free ram: "));
+			Serial.print(freeRam());
+			Serial.println(F("]]"));
+			while (true) { }
+			return 0;
+
+		case 1:
+			Serial.print(F("Called user function "));
 			Serial.print(funcid);
-			Serial.print(" with args: ");
+			Serial.print(F(" with args: "));
 			Serial.println(argc);
 
 			for (int i = 0; i < argc; i++) {
@@ -107,23 +123,23 @@ int16_t call_user(uint8_t funcid, uint8_t argc, int16_t *argv, void *ctx)
 
 			return 0;
 
-		case 1:
+		case 2:
 			for (int i = 0; i < argc; i++) {
 				Serial.print((char) argv[i]);
 			}
 			Serial.flush();
 			return 0;
 
-		case 2:
-			Serial.print("digitalWrite pin: ");
+		case 3:
+			Serial.print(F("digitalWrite pin: "));
 			Serial.print(argv[0]);
-			Serial.print(" val: ");
+			Serial.print(F(" val: "));
 			Serial.println(argv[1]);
 			digitalWrite(argv[0], argv[1] > 0 ? HIGH : LOW);   // sets the LED on
 			return 0;
 
-		case 3:
-			Serial.print("delay: ");
+		case 4:
+			Serial.print(F("delay: "));
 			Serial.println(argv[0]);
   		delay(argv[0]);
   		return 0;
@@ -131,18 +147,12 @@ int16_t call_user(uint8_t funcid, uint8_t argc, int16_t *argv, void *ctx)
 	return 0;
 }
 
-int freeRam () {
-  extern int __heap_start, *__brkval; 
-  int v; 
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
-}
-
 void setup()
 {
 	pinMode(13, OUTPUT);      // sets the digital pin as output
 
 	Serial.begin(9600);
-	Serial.println("Initializing...");
+	Serial.println(F("Initializing..."));
 
 	int srci = 0;
 	while (srci < sizeof(SOURCE)) {
@@ -156,11 +166,11 @@ void setup()
 		}
 	}
 
-	Serial.print("Downloaded ");
+	Serial.print(F("Downloaded "));
 	Serial.print(srci, DEC);
-	Serial.println(" bytes.");
+	Serial.println(F(" bytes."));
 	Serial.println(SOURCE);
-	Serial.print("Free RAM:");
+	Serial.print(F("Free RAM:"));
 	Serial.println(freeRam());
 	Serial.println("");
 
@@ -168,16 +178,16 @@ void setup()
 	Serial.flush();
 
 	if (compiler()) {
-		Serial.println("Error compiling.");
+		Serial.println(F("Error compiling."));
 		while (true) { }
 	} else {
-		Serial.print("Success compiling (");
+		Serial.print(F("Success compiling ("));
 		Serial.print(vm_mem_ptr, DEC);
-		Serial.println(" bytes)");
+		Serial.println(F(" bytes)"));
 		for (int i = 0; i < vm_mem_ptr; i++) {
-			Serial.print("0x");
+			Serial.print(F("0x"));
 			Serial.print(vm_mem[i], HEX);
-			Serial.print(" ");
+			Serial.print(F(" "));
 		}
 		Serial.println("");
 		Serial.println("");

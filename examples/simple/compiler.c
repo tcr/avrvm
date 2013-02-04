@@ -43,21 +43,31 @@ int stack_index (char* locals[], char* cmp) {
 
 /** compile **/
 
-uint8_t compile_expression (uint16_t *i, uint16_t totallen, uint8_t *argc, char* locals[]);
+typedef struct call_chain {
+  uint8_t argc;
+  struct call_chain *prev;
+} call_chain_t;
 
-uint8_t compile_chain (uint16_t *i, uint16_t totallen, uint8_t *argc, char* locals[])
+uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call_chain_t *chain);
+
+uint8_t compile_chain (uint16_t *i, uint16_t totallen, char* locals[], call_chain_t *chain)
 {
-  if (argc != NULL) {
-    (*argc)++;
+  while (chain != NULL) {
+    chain->argc++;
     MATCH_WHITESPACE();
     if (MATCH_CHAR(',')) {
-      return compile_expression(i, totallen, argc, locals);
+      return compile_expression(i, totallen, locals, chain);
+    } else if (!MATCH_CHAR(')')) {
+      return 2;
     }
+
+    chain = chain->prev;
+    continue;
   }
   return 0;
 }
 
-uint8_t compile_expression (uint16_t *i, uint16_t totallen, uint8_t *argc, char* locals[])
+uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call_chain_t *chain)
 {
   char *name;
   uint16_t len;
@@ -67,13 +77,13 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, uint8_t *argc, char*
 
     // true
     if (MATCH_KEYWORD("true")) {
-      compile_chain(i, totallen, argc, locals);
+      compile_chain(i, totallen, locals, chain);
       OP_PUSH_U3(1);
       return 0;
     }
     // false
     if (MATCH_KEYWORD("false")) {
-      compile_chain(i, totallen, argc, locals);
+      compile_chain(i, totallen, locals, chain);
       OP_PUSH_U3(0);
       return 0;
     }
@@ -83,9 +93,11 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, uint8_t *argc, char*
     int consumed = 0;
     if (sscanf(&SOURCE[*i], "%" SCNd16 "%n", &arg, &consumed) != 0) {
       *i += consumed;
-      compile_chain(i, totallen, argc, locals);
-      if (arg <= 0x7 && arg >= 0x0) {
-        OP_PUSH_U3((uint8_t) arg);
+      if (compile_chain(i, totallen, locals, chain) != 0) {
+        return 1;
+      }
+      if (arg <= 0x3 && arg >= -0x4) {
+        OP_PUSH_U3((int8_t) arg);
       } else if (arg <= 0xff && arg >= 0) {
         OP_PUSH_U8((uint8_t) arg);
       } else {
@@ -95,8 +107,8 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, uint8_t *argc, char*
     }
 
     // Characters
-    uint8_t t;
     if (MATCH_CHAR('\'')) {
+      uint8_t t;
       t = SOURCE[(*i)++];
       if (t == '\\') {
         switch (SOURCE[(*i)++]) {
@@ -107,23 +119,56 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, uint8_t *argc, char*
         }
       }
       REQUIRE(MATCH_CHAR('\''));
-      compile_chain(i, totallen, argc, locals);
+      compile_chain(i, totallen, locals, chain);
       OP_PUSH_U8(t);
       return 0;
     }
 
+    // Variables
     MATCH_TOKEN(name, &len);
     if (len != 0) {
       char name_token[256];
       strncpy(name_token, name, len);
       name_token[len] = '\0';
 
+      // Function invocation.
+      if (MATCH_CHAR('(')) {
+        /* read arguments */
+        call_chain_t chain2 = { 0, chain };
+        MATCH_WHITESPACE();
+        if (!MATCH_CHAR(')')) {
+          if (compile_expression(i, totallen, locals, &chain2) != 0) {
+            return 2;
+          }
+        }
+        // Argument count.
+        OP_PUSH_U8(chain2.argc);
+
+        uint8_t ufid;
+        if (sscanf(name, "$uf%" SCNu8, &ufid) > 0) {
+          OP_USERFUNC(ufid);
+        } else {
+          return 2;
+        }
+
+        return 0;
+      }
+
       int idx = stack_index(locals, name_token);
       if (idx == -1) {
         return 2;
       }
-      compile_chain(i, totallen, argc, locals);
-      OP_PUSH_LOCAL(idx);
+      MATCH_WHITESPACE();
+      if (MATCH_CHAR('=')) {
+        if (compile_expression(i, totallen, locals, chain) != 0) {
+          return 2;
+        }
+        OP_DUP(0);
+        OP_POP_LOCAL(idx);
+      } else {
+        compile_chain(i, totallen, locals, chain);
+        OP_PUSH_LOCAL(idx);
+      }
       return 0;
     }
 
@@ -157,8 +202,8 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
       // TODO wow this is bad
       name[len] = '\0';
       int l = stack_push(locals, name);
-      OP_PUSH_ZEROES(1);
-      OP_POP_LOCAL(l);
+      //OP_PUSH_ZEROES(1);
+      //OP_POP_LOCAL(l);
 
       continue;
     }
@@ -167,7 +212,7 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
       MATCH_WHITESPACE();
       REQUIRE(MATCH_CHAR('('));
 
-      if (compile_expression(i, totallen, NULL, locals)) {
+      if (compile_expression(i, totallen, locals, NULL)) {
         return 2;
       }
 
@@ -187,31 +232,10 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
       continue;
     }
 
-    // Function name
-    MATCH_TOKEN(name, &len);
-    if (len > 0) {
-      MATCH_WHITESPACE();
-      REQUIRE(MATCH_CHAR('('));
-
-      /* read arguments */
-      uint8_t argc = 0;
-      MATCH_WHITESPACE();
-      if (compile_expression(i, totallen, &argc, locals) != 0) {
-        break;
-      }
-      // Argument count.
-      OP_PUSH_U8(argc);
-
-      REQUIRE(MATCH_CHAR(')'));
-
+    // Expression
+    if (compile_expression(i, totallen, locals, NULL) == 0) {
       MATCH_WHITESPACE();
       REQUIRE(MATCH_CHAR(';'));
-
-      uint8_t ufid;
-      if (sscanf(name, "$uf%" SCNu8, &ufid) > 0) {
-        OP_USERFUNC(ufid);
-      }
-
       OP_POP();
       continue;
     }
