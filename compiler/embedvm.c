@@ -1,1 +1,1 @@
-../../vmsrc/embedvm.c
+../embedvm/vmsrc/embedvm.c

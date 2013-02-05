@@ -4,5 +4,5 @@
   "main": "index.js",
   "dependencies": {
     "serialport": "~1.0.8"
-  },
+  }
 }

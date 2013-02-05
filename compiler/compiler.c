@@ -213,8 +213,11 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
       // TODO wow this is bad
       name[len] = '\0';
       int l = stack_push(locals, name);
-      //OP_PUSH_ZEROES(1);
-      //OP_POP_LOCAL(l);
+
+      // We push a 0 to the stack, so we can
+      // reference this reserved value on the stack
+      // directly.
+      OP_PUSH_ZEROES(1);
 
       continue;
     }

@@ -1,5 +1,5 @@
 PushZeros(n=1)
-PushConstantV(value=6)
+PushConstantV(value=1000)
 PopLocal(sfa=0)
 PushConstantV(value=14)
 PopLocal(sfa=1)

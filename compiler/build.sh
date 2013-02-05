@@ -1,8 +1,7 @@
 #!/bin/bash
 set -xe
-make -C ../../tools
-../../tools/evmcomp vmcode.evm
-ln -sf ../../vmsrc/embedvm.c embedvm.c
-ln -sf ../../vmsrc/embedvm.h embedvm.h
+make -C ../embedvm/tools
+ln -sf ../embedvm/vmsrc/embedvm.c embedvm.c
+ln -sf ../embedvm/vmsrc/embedvm.h embedvm.h
 #gcc -o localversion localversion.c embedvm.c
 ./arduino-cc.sh -o firmware hostapp.cc  embedvm.c
