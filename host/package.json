@@ -1,0 +1,8 @@
+{
+  "name": "host",
+  "version": "0.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "serialport": "~1.0.8"
+  },
+}
