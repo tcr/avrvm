@@ -1,7 +1,0 @@
-
-function main()
-{
-	$uf0(5);
-  while (true) {}
-}
-
