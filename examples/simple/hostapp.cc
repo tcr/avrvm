@@ -48,6 +48,14 @@ uint8_t vm_mem[VM_MEM_SIZE];
 uint8_t vm_mem_ptr = 0;
 
 void OP (uint8_t val) { vm_mem[vm_mem_ptr++] = val; }
+#define OP_PUSH_NUM(arg) if (arg <= 0x3 && arg >= -0x4) { \
+    OP_PUSH_U3((int8_t) arg); \
+  } else if (arg <= 0xff && arg >= 0) { \
+    OP_PUSH_U8((uint8_t) arg); \
+  } else { \
+    OP_PUSH_16(arg); \
+  }
+#define OP_PLUS() OP(0x80 + 0x00)
 #define OP_DUP(V) OP(0xc0 + (V & 0x07) + 0x05) // TODO V <= 5
 #define OP_PUSH_LOCAL(V) OP(0x00 + (0x3f & V));
 #define OP_POP_LOCAL(V) OP(0x40 + (0x3f & V));

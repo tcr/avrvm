@@ -50,41 +50,54 @@ typedef struct call_chain {
 
 uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call_chain_t *chain);
 
-uint8_t compile_chain (uint16_t *i, uint16_t totallen, char* locals[], call_chain_t *chain)
+// TODO would this never return ) ?
+uint8_t compile_chain (uint16_t *i, uint16_t totallen, char* locals[], call_chain_t *chain, char** op)
 {
-  while (chain != NULL) {
-    chain->argc++;
+  if (chain != NULL) {
     MATCH_WHITESPACE();
     if (MATCH_CHAR(',')) {
+      chain->argc++;
       return compile_expression(i, totallen, locals, chain);
-    } else if (!MATCH_CHAR(')')) {
+    } else if (MATCH_CHAR(')')) {
+      chain->argc++;
+      return compile_chain(i, totallen, locals, chain->prev, op);
+    } else {
+      switch (SOURCE[*i]) {
+        case '+': *op = &SOURCE[*i]; (*i)++; return compile_expression(i, totallen, locals, chain);
+      }
       return 2;
     }
-
-    chain = chain->prev;
-    continue;
   }
   return 0;
 }
+
+void compile_op (char *op) {
+  if (strncmp(op, "+", 1) == 0) {
+    OP_PLUS();
+  }
+}
+
+#define COMPILE_OP(V) if (V != NULL) { compile_op(V); }
 
 uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call_chain_t *chain)
 {
   char *name;
   uint16_t len;
+  char *op = NULL;
 
   while (*i <= totallen) {
     MATCH_WHITESPACE();
 
     // true
     if (MATCH_KEYWORD("true")) {
-      compile_chain(i, totallen, locals, chain);
-      OP_PUSH_U3(1);
+      compile_chain(i, totallen, locals, chain, &op);
+      OP_PUSH_NUM(1);
       return 0;
     }
     // false
     if (MATCH_KEYWORD("false")) {
-      compile_chain(i, totallen, locals, chain);
-      OP_PUSH_U3(0);
+      compile_chain(i, totallen, locals, chain, &op);
+      OP_PUSH_NUM(0);
       return 0;
     }
 
@@ -93,16 +106,11 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
     int consumed = 0;
     if (sscanf(&SOURCE[*i], "%" SCNd16 "%n", &arg, &consumed) != 0) {
       *i += consumed;
-      if (compile_chain(i, totallen, locals, chain) != 0) {
+      if (compile_chain(i, totallen, locals, chain, &op) != 0) {
         return 1;
       }
-      if (arg <= 0x3 && arg >= -0x4) {
-        OP_PUSH_U3((int8_t) arg);
-      } else if (arg <= 0xff && arg >= 0) {
-        OP_PUSH_U8((uint8_t) arg);
-      } else {
-        OP_PUSH_16(arg);
-      }
+      OP_PUSH_NUM(arg);
+      COMPILE_OP(op);
       return 0;
     }
 
@@ -119,8 +127,9 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
         }
       }
       REQUIRE(MATCH_CHAR('\''));
-      compile_chain(i, totallen, locals, chain);
+      compile_chain(i, totallen, locals, chain, &op);
       OP_PUSH_U8(t);
+      COMPILE_OP(op);
       return 0;
     }
 
@@ -142,7 +151,7 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
           }
         }
         // Argument count.
-        OP_PUSH_U8(chain2.argc);
+        OP_PUSH_NUM(chain2.argc);
 
         uint8_t ufid;
         if (sscanf(name, "$uf%" SCNu8, &ufid) > 0) {
@@ -151,6 +160,7 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
           return 2;
         }
 
+        COMPILE_OP(op);
         return 0;
       }
 
@@ -166,9 +176,10 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
         OP_DUP(0);
         OP_POP_LOCAL(idx);
       } else {
-        compile_chain(i, totallen, locals, chain);
+        compile_chain(i, totallen, locals, chain, &op);
         OP_PUSH_LOCAL(idx);
       }
+      COMPILE_OP(op);
       return 0;
     }
 
