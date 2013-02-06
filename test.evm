@@ -1,9 +1,5 @@
 function main() {
-  local i;
-  local j;
-  i = 6;
-  j = 14;
-  $uf1(i);
-  $uf1(j);
+  $uf1(1 - 2 + 3);
+  $uf1(3 + 2 - 1);
   $uf0();
 }

@@ -48,9 +48,9 @@ extern void embedvm_exec(struct embedvm_s *vm)
 		break;
 	case 0x80+0 ... 0x80+11:
 	case 0xa8+0 ... 0xa8+5:
-		b = embedvm_pop(vm);
-	case 0x80+12 ... 0x80+14:
 		a = embedvm_pop(vm);
+	case 0x80+12 ... 0x80+14:
+		b = embedvm_pop(vm);
 		switch (opcode)
 		{
 			case 0x80 +  0: embedvm_push(vm, a + b);  break;
@@ -65,9 +65,9 @@ extern void embedvm_exec(struct embedvm_s *vm)
 			case 0x80 +  9: embedvm_push(vm, a ^ b);  break;
 			case 0x80 + 10: embedvm_push(vm, a && b); break;
 			case 0x80 + 11: embedvm_push(vm, a || b); break;
-			case 0x80 + 12: embedvm_push(vm, ~a);     break;
-			case 0x80 + 13: embedvm_push(vm, -a);     break;
-			case 0x80 + 14: embedvm_push(vm, !a);     break;
+			case 0x80 + 12: embedvm_push(vm, ~b);     break;
+			case 0x80 + 13: embedvm_push(vm, -b);     break;
+			case 0x80 + 14: embedvm_push(vm, !b);     break;
 			case 0xa8 +  0: embedvm_push(vm, a <  b); break;
 			case 0xa8 +  1: embedvm_push(vm, a <= b); break;
 			case 0xa8 +  2: embedvm_push(vm, a == b); break;

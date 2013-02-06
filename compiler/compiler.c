@@ -63,7 +63,10 @@ uint8_t compile_chain (uint16_t *i, uint16_t totallen, char* locals[], call_chai
       return compile_chain(i, totallen, locals, chain->prev, op);
     } else {
       switch (SOURCE[*i]) {
-        case '+': *op = &SOURCE[*i]; (*i)++; return compile_expression(i, totallen, locals, chain);
+        case '+':
+        case '-':
+          *op = &SOURCE[*i]; (*i)++;
+          return compile_expression(i, totallen, locals, chain);
       }
       return 2;
     }
@@ -72,8 +75,9 @@ uint8_t compile_chain (uint16_t *i, uint16_t totallen, char* locals[], call_chai
 }
 
 void compile_op (char *op) {
-  if (strncmp(op, "+", 1) == 0) {
-    OP_PLUS();
+  switch (*op) {
+    case '+': OP_ADD(); return;
+    case '-': OP_SUB(); return;
   }
 }
 

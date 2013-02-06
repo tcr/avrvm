@@ -45,7 +45,8 @@
 
 #ifdef DEBUG
 #define OP_PUSH_NUM(V) printf("OP_PUSH_NUM %d\n", V);
-#define OP_PLUS() printf("OP_PLUS\n");
+#define OP_ADD() printf("OP_ADD\n");
+#define OP_SUB() printf("OP_SUB\n");
 #define OP_DUP(D) printf("OP_DUP %d\n", D);
 #define OP_POP_LOCAL(V) printf("OP_POP_LOCAL %d\n", V);
 #define OP_PUSH_LOCAL(V) printf("OP_PUSH_LOCAL %d\n", V);
@@ -72,7 +73,8 @@ void OP (uint8_t val) { vm_mem[vm_mem_ptr++] = val; }
   } else { \
     OP_PUSH_16(arg); \
   }
-#define OP_PLUS() OP(0x80 + 0x00)
+#define OP_ADD() OP(0x80 + 0x00)
+#define OP_SUB() OP(0x80 + 0x01)
 #define OP_DUP(V) OP(0xc0 + (V & 0x07) + 0x05) // TODO V <= 5
 #define OP_PUSH_LOCAL(V) OP(0x00 + (0x3f & V));
 #define OP_POP_LOCAL(V) OP(0x40 + (0x3f & V));
