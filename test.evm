@@ -1,5 +1,5 @@
 function main() {
-  $uf1(1 - 2 + 3);
-  $uf1(3 + 2 - 1);
-  $uf0();
+  while (true) {
+    $uf1(5);
+  }
 }

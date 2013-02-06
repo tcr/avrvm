@@ -41,10 +41,12 @@
  * Compiler
  */
 
-// #define DEBUG 0
+//#define DEBUG 0
 
 #ifdef DEBUG
 #define OP_PUSH_NUM(V) printf("OP_PUSH_NUM %d\n", V);
+#define OP_LABEL() (printf("OP_MARK\n"), 0)
+#define OP_CHANGE(V) printf("OP_CHANGE %d\n", V);
 #define OP_ADD() printf("OP_ADD\n");
 #define OP_SUB() printf("OP_SUB\n");
 #define OP_DUP(D) printf("OP_DUP %d\n", D);
@@ -73,6 +75,8 @@ void OP (uint8_t val) { vm_mem[vm_mem_ptr++] = val; }
   } else { \
     OP_PUSH_16(arg); \
   }
+#define OP_LABEL() (vm_mem_ptr)
+#define OP_CHANGE(V) (vm_mem_ptr = V);
 #define OP_ADD() OP(0x80 + 0x00)
 #define OP_SUB() OP(0x80 + 0x01)
 #define OP_DUP(V) OP(0xc0 + (V & 0x07) + 0x05) // TODO V <= 5
@@ -89,6 +93,6 @@ void OP (uint8_t val) { vm_mem[vm_mem_ptr++] = val; }
 #define OP_RET_VOID() OP(0x9c);
 #endif
 
-char SOURCE[SOURCE_SIZE] = "";
+char SOURCE[SOURCE_SIZE];
 
 #include "./compiler.c"

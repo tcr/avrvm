@@ -234,7 +234,8 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
         return 2;
       }
 
-      OP_JUNLESS_8(0x04);
+      int l_start = OP_LABEL();
+      OP_JUNLESS_8(0x00);
 
       MATCH_WHITESPACE();
       REQUIRE(MATCH_CHAR(')'));
@@ -242,10 +243,18 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
       MATCH_WHITESPACE();
       REQUIRE(MATCH_CHAR('{'));
 
+      compile_statement(i, totallen, locals);
+
       MATCH_WHITESPACE();
       REQUIRE(MATCH_CHAR('}'));
 
-      OP_JUMP_8(0xfd);
+      int l_end = OP_LABEL();
+      OP_CHANGE(l_end);
+      OP_JUMP_8(l_start - l_end - 1);
+      int l_tmp = OP_LABEL();
+      OP_CHANGE(l_start);
+      OP_JUNLESS_8(l_tmp - l_start);
+      OP_CHANGE(l_tmp);
 
       continue;
     }

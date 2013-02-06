@@ -4,11 +4,12 @@
 #include <ctype.h>
 #include <inttypes.h>
 
-char SOURCE[] = {
+#include "./compiler-mem.c"
+
+
+char SOURCE[SOURCE_SIZE] = {
 #include "source.h"
 }; 
-
-#include "./compiler-mem.c"
 
 
 int main () {
