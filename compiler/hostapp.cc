@@ -56,12 +56,13 @@ int16_t call_user(uint8_t funcid, uint8_t argc, int16_t *argv, void *ctx)
 			return 0;
 
 		case 1:
-			Serial.print(F("Called user function "));
-			Serial.print(funcid);
-			Serial.print(F(" with args: "));
+			Serial.print(F("Logging: "));
 			Serial.println(argc);
 
 			for (int i = 0; i < argc; i++) {
+				Serial.print(F("["));
+				Serial.print(i);
+				Serial.print(F("] "));
 				Serial.println(argv[i], DEC);
 			}
 
@@ -75,26 +76,37 @@ int16_t call_user(uint8_t funcid, uint8_t argc, int16_t *argv, void *ctx)
 			return 0;
 
 		case 3:
+			Serial.print(F("delay: "));
+			Serial.println(argv[0]);
+  		delay(argv[0]);
+  		return 0;
+
+		case 4:
+			Serial.print(F("pinMode: "));
+			Serial.print(argv[0]);
+			Serial.print(F(" val: "));
+			Serial.println(argv[1]);
+			pinMode(argv[0], argv[1] > 0 ? INPUT : OUTPUT);
+			return 0;
+
+		case 5:
+			Serial.print(F("digitalRead pin: "));
+			Serial.println(argv[0]);
+			return digitalRead(argv[0]);
+
+		case 6:
 			Serial.print(F("digitalWrite pin: "));
 			Serial.print(argv[0]);
 			Serial.print(F(" val: "));
 			Serial.println(argv[1]);
 			digitalWrite(argv[0], argv[1] > 0 ? HIGH : LOW);   // sets the LED on
 			return 0;
-
-		case 4:
-			Serial.print(F("delay: "));
-			Serial.println(argv[0]);
-  		delay(argv[0]);
-  		return 0;
 	}
 	return 0;
 }
 
 void setup()
 {
-	pinMode(13, OUTPUT);      // sets the digital pin as output
-
 	Serial.begin(9600);
 	Serial.println(F("Initializing..."));
 

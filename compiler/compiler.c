@@ -2,7 +2,6 @@
 #define MATCH_STR(S, V) (strncmp(S, V, sizeof(S) - 1) == 0)
 #define MATCH_KEYWORD(S) (strncmp(S, &SOURCE[*i], sizeof(S) - 1) == 0) && !isalnums(SOURCE[*i + sizeof(S) - 1]) && ((*i += sizeof(S) - 1), 1)
 #define MATCH_CHAR(C) ((SOURCE[*i] == C) && ((*i += 1), 1))
-#define MATCH_WHITESPACE() while (isspace(SOURCE[*i])) { *i += 1; }
 #define MATCH_TOKEN(P, L) P = &SOURCE[*i], *(L) = 0; \
   while (isalnums(SOURCE[*i])) (*i += 1), *(L) += 1;
 #define REQUIRE(A) if (!(A)) return printf("Failed condition.\n"), 2;
@@ -48,13 +47,32 @@ typedef struct call_chain {
   struct call_chain *prev;
 } call_chain_t;
 
+void compile_whitespace (uint16_t *i, uint16_t totallen) {
+  while (1) {
+    if (isspace(SOURCE[*i])) {
+      *i += 1;
+    } else if (SOURCE[*i] == '/' && SOURCE[(*i) + 1] == '/') {
+      while (SOURCE[*i] != '\0' && SOURCE[*i] != '\n') {
+        *i += 1;
+      }
+    } else if (SOURCE[*i] == '/' && SOURCE[(*i) + 1] == '*') {
+      while ((SOURCE[(*i)] != '*' || SOURCE[(*i) + 1] != '/') && SOURCE[*i] != '\0') {
+        *i += 1;
+      }
+      MATCH_CHAR('*'); MATCH_CHAR('/');
+    } else {
+      break;
+    }
+  }
+}
+
 uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call_chain_t *chain);
 
 // TODO would this never return ) ?
 uint8_t compile_chain (uint16_t *i, uint16_t totallen, char* locals[], call_chain_t *chain, char** op)
 {
   if (chain != NULL) {
-    MATCH_WHITESPACE();
+    compile_whitespace(i, totallen);
     if (MATCH_CHAR(',')) {
       chain->argc++;
       return compile_expression(i, totallen, locals, chain);
@@ -90,7 +108,7 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
   char *op = NULL;
 
   while (*i <= totallen) {
-    MATCH_WHITESPACE();
+    compile_whitespace(i, totallen);
 
     // true
     if (MATCH_KEYWORD("true")) {
@@ -125,8 +143,13 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
       if (t == '\\') {
         switch (SOURCE[(*i)++]) {
           case '\\': t = '\\'; break;
+          case '\'': t = '\''; break;
+          case '\"': t = '\"'; break;
           case 'n': t = '\n'; break;
           case 't': t = '\t'; break;
+          case 'r': t = '\r'; break;
+          case 'b': t = 'b'; break;
+          case 'f': t = 'f'; break;
           default: return 1;
         }
       }
@@ -148,7 +171,7 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
       if (MATCH_CHAR('(')) {
         /* read arguments */
         call_chain_t chain2 = { 0, chain };
-        MATCH_WHITESPACE();
+        compile_whitespace(i, totallen);
         if (!MATCH_CHAR(')')) {
           if (compile_expression(i, totallen, locals, &chain2) != 0) {
             return 2;
@@ -172,7 +195,7 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
       if (idx == -1) {
         return 2;
       }
-      MATCH_WHITESPACE();
+      compile_whitespace(i, totallen);
       if (MATCH_CHAR('=')) {
         if (compile_expression(i, totallen, locals, chain) != 0) {
           return 2;
@@ -198,20 +221,20 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
   uint16_t len;
 
   while (*i <= totallen) {
-    MATCH_WHITESPACE();
+    compile_whitespace(i, totallen);
 
     if (MATCH_CHAR(';')) {
       continue;
     }
 
     if (MATCH_KEYWORD("local")) {
-      MATCH_WHITESPACE();
+      compile_whitespace(i, totallen);
       MATCH_TOKEN(name, &len);
       if (len == 0) {
         return 2;
       }
 
-      MATCH_WHITESPACE();
+      compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR(';'));
 
       // TODO wow this is bad
@@ -227,7 +250,7 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
     }
 
     if (MATCH_KEYWORD("while")) {
-      MATCH_WHITESPACE();
+      compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR('('));
 
       if (compile_expression(i, totallen, locals, NULL)) {
@@ -237,20 +260,49 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
       int l_start = OP_LABEL();
       OP_JUNLESS_8(0x00);
 
-      MATCH_WHITESPACE();
+      compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR(')'));
 
-      MATCH_WHITESPACE();
+      compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR('{'));
 
       compile_statement(i, totallen, locals);
 
-      MATCH_WHITESPACE();
+      compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR('}'));
 
       int l_end = OP_LABEL();
-      OP_CHANGE(l_end);
       OP_JUMP_8(l_start - l_end - 1);
+      int l_tmp = OP_LABEL();
+      OP_CHANGE(l_start);
+      OP_JUNLESS_8(l_tmp - l_start);
+      OP_CHANGE(l_tmp);
+
+      continue;
+    }
+
+    if (MATCH_KEYWORD("if")) {
+      compile_whitespace(i, totallen);
+      REQUIRE(MATCH_CHAR('('));
+
+      if (compile_expression(i, totallen, locals, NULL)) {
+        return 2;
+      }
+
+      int l_start = OP_LABEL();
+      OP_JUNLESS_8(0x00);
+
+      compile_whitespace(i, totallen);
+      REQUIRE(MATCH_CHAR(')'));
+
+      compile_whitespace(i, totallen);
+      REQUIRE(MATCH_CHAR('{'));
+
+      compile_statement(i, totallen, locals);
+
+      compile_whitespace(i, totallen);
+      REQUIRE(MATCH_CHAR('}'));
+
       int l_tmp = OP_LABEL();
       OP_CHANGE(l_start);
       OP_JUNLESS_8(l_tmp - l_start);
@@ -261,7 +313,7 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
 
     // Expression
     if (compile_expression(i, totallen, locals, NULL) == 0) {
-      MATCH_WHITESPACE();
+      compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR(';'));
       OP_POP();
       continue;
@@ -281,10 +333,10 @@ uint8_t compile_global (uint16_t *i, uint16_t totallen)
       return 0;
     }
 
-    MATCH_WHITESPACE();
+    compile_whitespace(i, totallen);
 
     if (MATCH_KEYWORD("function")) {
-      MATCH_WHITESPACE();
+      compile_whitespace(i, totallen);
 
       // Function name
       char *name;
@@ -292,13 +344,13 @@ uint8_t compile_global (uint16_t *i, uint16_t totallen)
       MATCH_TOKEN(name, &len);
 
       // Parens
-      MATCH_WHITESPACE();
+      compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR('('));
-      MATCH_WHITESPACE();
+      compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR(')'));
 
       // Braces
-      MATCH_WHITESPACE();
+      compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR('{'));
 
       char* locals[32] = { 0 };
