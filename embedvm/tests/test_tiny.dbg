@@ -1,7 +1,9 @@
 
-Total code and data length: 20
+Total code and data length: 15
 
-main @ 0000: F1 9A.03E8 40 98.0E 41 00 91 B1 9D 01 91 B1 9D 90 B0 9D 9C
+pin_mode @ 0000: 3F 91 B1 9D 9C
 
-_end @ 0014:
+main @ 0005: 98.23 A2.F9r F8 9D 90 B0 9D 9C
+
+_end @ 000F:
 

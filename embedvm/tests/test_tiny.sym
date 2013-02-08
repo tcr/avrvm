@@ -1,2 +1,3 @@
-0000 main (code)
-0014 _end (other)
+0000 pin_mode (code)
+0005 main (code)
+000F _end (other)

@@ -1,4 +1,4 @@
-#define isalnums(S) (isalnum(S) || S == '$')
+#define isalnums(S) (isalnum(S) || S == '$' || S == '_')
 #define MATCH_STR(S, V) (strncmp(S, V, sizeof(S) - 1) == 0)
 #define MATCH_KEYWORD(S) (strncmp(S, &SOURCE[*i], sizeof(S) - 1) == 0) && !isalnums(SOURCE[*i + sizeof(S) - 1]) && ((*i += sizeof(S) - 1), 1)
 #define MATCH_CHAR(C) ((SOURCE[*i] == C) && ((*i += 1), 1))
@@ -6,9 +6,11 @@
   while (isalnums(SOURCE[*i])) (*i += 1), *(L) += 1;
 #define REQUIRE(A) if (!(A)) return printf("Failed condition.\n"), 2;
 
+#define LOCALS_LENGTH 0x40
+
 int stack_length (char* locals[]) {
   int i;
-  for (i = 0; i < 32; i++) {
+  for (i = 0; i < LOCALS_LENGTH; i++) {
     if (locals[i] == NULL) {
       return i;
     }
@@ -18,7 +20,7 @@ int stack_length (char* locals[]) {
 
 int stack_push (char* locals[], char* ptr) {
   int i;
-  for (i = 0; i < 32; i++) {
+  for (i = 0; i < LOCALS_LENGTH; i++) {
     if (locals[i] == NULL) {
       locals[i] = ptr;
       return i;
@@ -27,14 +29,64 @@ int stack_push (char* locals[], char* ptr) {
   return -1;
 }
 
+int stack_unshift (char* locals[], char* ptr) {
+  int i;
+  for (i = LOCALS_LENGTH - 1; i >= 0; i--) {
+    if (locals[i] == NULL) {
+      locals[i] = ptr;
+      return i;
+    }
+  }
+  return LOCALS_LENGTH - 1;
+}
+
 int stack_index (char* locals[], char* cmp) {
   int i;
-  for (i = 0; i < 32; i++) {
+  for (i = 0; i < LOCALS_LENGTH; i++) {
     if (locals[i] == NULL) {
-      return -1;
+      continue;
     }
     if (strncmp(locals[i], cmp, 256) == 0) {
       return i;
+    }
+  }
+  return -1;
+}
+
+typedef struct global {
+  char* name;
+  int pos;
+} global_t;
+
+int globals_length (global_t globals[]) {
+  int i;
+  for (i = 0; i < 32; i++) {
+    if (globals[i].name == NULL) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+int globals_push (global_t globals[], global_t ptr) {
+  int i;
+  for (i = 0; i < 32; i++) {
+    if (globals[i].name == NULL) {
+      globals[i] = ptr;
+      return i;
+    }
+  }
+  return -1;
+}
+
+int globals_index (global_t globals[], char* cmp) {
+  int i;
+  for (i = 0; i < 32; i++) {
+    if (globals[i].name == NULL) {
+      return -1;
+    }
+    if (strncmp(globals[i].name, cmp, 256) == 0) {
+      return globals[i].pos;
     }
   }
   return -1;
@@ -66,25 +118,25 @@ void compile_whitespace (uint16_t *i, uint16_t totallen) {
   }
 }
 
-uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call_chain_t *chain);
+uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], global_t globals[], call_chain_t *chain);
 
 // TODO would this never return ) ?
-uint8_t compile_chain (uint16_t *i, uint16_t totallen, char* locals[], call_chain_t *chain, char** op)
+uint8_t compile_chain (uint16_t *i, uint16_t totallen, char* locals[], global_t globals[], call_chain_t *chain, char** op)
 {
   if (chain != NULL) {
     compile_whitespace(i, totallen);
     if (MATCH_CHAR(',')) {
       chain->argc++;
-      return compile_expression(i, totallen, locals, chain);
+      return compile_expression(i, totallen, locals, globals, chain);
     } else if (MATCH_CHAR(')')) {
       chain->argc++;
-      return compile_chain(i, totallen, locals, chain->prev, op);
+      return compile_chain(i, totallen, locals, globals, chain->prev, op);
     } else {
       switch (SOURCE[*i]) {
         case '+':
         case '-':
           *op = &SOURCE[*i]; (*i)++;
-          return compile_expression(i, totallen, locals, chain);
+          return compile_expression(i, totallen, locals, globals, chain);
       }
       return 2;
     }
@@ -101,7 +153,7 @@ void compile_op (char *op) {
 
 #define COMPILE_OP(V) if (V != NULL) { compile_op(V); }
 
-uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call_chain_t *chain)
+uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], global_t globals[], call_chain_t *chain)
 {
   char *name;
   uint16_t len;
@@ -112,13 +164,13 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
 
     // true
     if (MATCH_KEYWORD("true")) {
-      compile_chain(i, totallen, locals, chain, &op);
+      compile_chain(i, totallen, locals, globals, chain, &op);
       OP_PUSH_NUM(1);
       return 0;
     }
     // false
     if (MATCH_KEYWORD("false")) {
-      compile_chain(i, totallen, locals, chain, &op);
+      compile_chain(i, totallen, locals, globals, chain, &op);
       OP_PUSH_NUM(0);
       return 0;
     }
@@ -128,7 +180,7 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
     int consumed = 0;
     if (sscanf(&SOURCE[*i], "%" SCNd16 "%n", &arg, &consumed) != 0) {
       *i += consumed;
-      if (compile_chain(i, totallen, locals, chain, &op) != 0) {
+      if (compile_chain(i, totallen, locals, globals, chain, &op) != 0) {
         return 1;
       }
       OP_PUSH_NUM(arg);
@@ -154,7 +206,7 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
         }
       }
       REQUIRE(MATCH_CHAR('\''));
-      compile_chain(i, totallen, locals, chain, &op);
+      compile_chain(i, totallen, locals, globals, chain, &op);
       OP_PUSH_U8(t);
       COMPILE_OP(op);
       return 0;
@@ -173,16 +225,20 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
         call_chain_t chain2 = { 0, chain };
         compile_whitespace(i, totallen);
         if (!MATCH_CHAR(')')) {
-          if (compile_expression(i, totallen, locals, &chain2) != 0) {
+          if (compile_expression(i, totallen, locals, globals, &chain2) != 0) {
             return 2;
           }
         }
-        // Argument count.
-        OP_PUSH_NUM(chain2.argc);
+
 
         uint8_t ufid;
-        if (sscanf(name, "$uf%" SCNu8, &ufid) > 0) {
+        int globali;
+        if (sscanf(name_token, "$uf%" SCNu8, &ufid) > 0) {
+          OP_PUSH_NUM(chain2.argc);
           OP_USERFUNC(ufid);
+        } else if ((globali = globals_index(globals, name_token)) > -1) {
+          OP_CALL(globali);
+          OP_POP_BUT_TOP(chain2.argc);
         } else {
           return 2;
         }
@@ -197,13 +253,13 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
       }
       compile_whitespace(i, totallen);
       if (MATCH_CHAR('=')) {
-        if (compile_expression(i, totallen, locals, chain) != 0) {
+        if (compile_expression(i, totallen, locals, globals, chain) != 0) {
           return 2;
         }
         OP_DUP(0);
         OP_POP_LOCAL(idx);
       } else {
-        compile_chain(i, totallen, locals, chain, &op);
+        compile_chain(i, totallen, locals, globals, chain, &op);
         OP_PUSH_LOCAL(idx);
       }
       COMPILE_OP(op);
@@ -215,7 +271,7 @@ uint8_t compile_expression (uint16_t *i, uint16_t totallen, char* locals[], call
   return 1;
 }
 
-uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
+uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[], global_t globals[])
 {
   char *name;
   uint16_t len;
@@ -249,11 +305,26 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
       continue;
     }
 
+    if (MATCH_KEYWORD("return")) {
+      compile_whitespace(i, totallen);
+
+      if (compile_expression(i, totallen, locals, globals, NULL)) {
+        return 2;
+      }
+
+      compile_whitespace(i, totallen);
+      REQUIRE(MATCH_CHAR(';'));
+
+      OP_RET();
+
+      continue;
+    }
+
     if (MATCH_KEYWORD("while")) {
       compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR('('));
 
-      if (compile_expression(i, totallen, locals, NULL)) {
+      if (compile_expression(i, totallen, locals, globals, NULL)) {
         return 2;
       }
 
@@ -266,7 +337,7 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
       compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR('{'));
 
-      compile_statement(i, totallen, locals);
+      compile_statement(i, totallen, locals, globals);
 
       compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR('}'));
@@ -285,7 +356,7 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
       compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR('('));
 
-      if (compile_expression(i, totallen, locals, NULL)) {
+      if (compile_expression(i, totallen, locals, globals, NULL)) {
         return 2;
       }
 
@@ -298,7 +369,7 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
       compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR('{'));
 
-      compile_statement(i, totallen, locals);
+      compile_statement(i, totallen, locals, globals);
 
       compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR('}'));
@@ -312,7 +383,7 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
     }
 
     // Expression
-    if (compile_expression(i, totallen, locals, NULL) == 0) {
+    if (compile_expression(i, totallen, locals, globals, NULL) == 0) {
       compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR(';'));
       OP_POP();
@@ -325,11 +396,14 @@ uint8_t compile_statement (uint16_t *i, uint16_t totallen, char* locals[])
   return 1;
 }
 
-uint8_t compile_global (uint16_t *i, uint16_t totallen)
+uint8_t compile_global (uint16_t *i, uint16_t totallen, int* start)
 {
+  global_t globals[32] = { 0 }; 
+
   while (*i <= totallen) {
     // Null. Terminate happily
     if (SOURCE[*i] == '\0') {
+      *start = globals_index(globals, "main");
       return 0;
     }
 
@@ -337,6 +411,8 @@ uint8_t compile_global (uint16_t *i, uint16_t totallen)
 
     if (MATCH_KEYWORD("function")) {
       compile_whitespace(i, totallen);
+
+      char* locals[LOCALS_LENGTH] = { 0 };
 
       // Function name
       char *name;
@@ -346,15 +422,41 @@ uint8_t compile_global (uint16_t *i, uint16_t totallen)
       // Parens
       compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR('('));
+      name[len] = '\0';
+
       compile_whitespace(i, totallen);
-      REQUIRE(MATCH_CHAR(')'));
+      if (!MATCH_CHAR(')')) {
+        while (1) {
+          char *arg;
+          MATCH_TOKEN(arg, &len);
+          if (len == 0) {
+            return 2;
+          }
+
+          compile_whitespace(i, totallen);
+          uint8_t findnext = MATCH_CHAR(',');
+          if (!findnext) {
+            REQUIRE(MATCH_CHAR(')'));
+          }
+
+          arg[len] = '\0';
+          stack_unshift(locals, arg);
+
+          if (!findnext) {
+            break;
+          }
+
+          compile_whitespace(i, totallen);
+        }
+      }
+      
+      globals_push(globals, (global_t) { name, OP_LABEL() });
 
       // Braces
       compile_whitespace(i, totallen);
       REQUIRE(MATCH_CHAR('{'));
 
-      char* locals[32] = { 0 };
-      compile_statement(i, totallen, locals);
+      compile_statement(i, totallen, locals, globals);
 
       REQUIRE(MATCH_CHAR('}'));
       OP_RET_VOID();
@@ -367,8 +469,23 @@ uint8_t compile_global (uint16_t *i, uint16_t totallen)
   return 1;
 }
 
-int compiler () {
-  uint16_t len = strnlen(SOURCE, 256);
+int compiler (int* start) {
+  vm_mem_ptr = 0;
+  OP_PUSH_NUM(1);
+  OP_USERFUNC(0);
+
+  uint16_t len = strnlen(SOURCE, SOURCE_SIZE);
   uint16_t i = 0;
-  return compile_global(&i, len);
+  int ret = compile_global(&i, len, start);
+  return ret;
+
+  int j, k, l;
+  for (j = 0, k = 1, l = 1; j < i; j++, l++) {
+    if (SOURCE[j] == '\n') {
+      k++;
+      l = 1;
+    }
+  }
+  printf("Ended at line %d char %d.\n", k, l);
+  return ret;
 }

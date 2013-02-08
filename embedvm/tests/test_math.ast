@@ -1,126 +1,126 @@
-    LEFT 0x7fcfaa403aa0 @ 0000 0000:
-     RIGHT 0x7fcfaa403a20 @ 0000 0000: sym=ghundret datalen=2 initdata=0064
-   LEFT 0x7fcfaa403ba0 @ 0000 0002:
-  LEFT 0x7fcfaa4043c0 @ 0000 0002:
-    LEFT 0x7fcfaa403b60 @ 0002 0002:
-   RIGHT 0x7fcfaa404370 @ 0002 0002: sym=fibonacci
-    RIGHT 0x7fcfaa404330 @ 0002 0002:
-      LEFT 0x7fcfaa403e90 @ 0002 0002:
-          LEFT 0x7fcfaa403c40 @ 0002 0002: op=3f
-         LEFT 0x7fcfaa403cc0 @ 0002 0003:
-          RIGHT 0x7fcfaa403c80 @ 0003 0003: op=92
-        LEFT 0x7fcfaa403d00 @ 0002 0004: op=a8
-       RIGHT 0x7fcfaa403e50 @ 0002 0005: op=a6 arg=04 rel argaddr=0x7fcfaa403dd0
-          LEFT 0x7fcfaa403d50 @ 0007 0007: op=3f
-         LEFT 0x7fcfaa403d90 @ 0007 0008: op=9b
-        RIGHT 0x7fcfaa403e10 @ 0007 0009:
-         RIGHT 0x7fcfaa403dd0 @ 0009 0009:
-     RIGHT 0x7fcfaa4042f0 @ 0002 0009:
-            LEFT 0x7fcfaa403ef0 @ 0009 0009: op=3f
-           LEFT 0x7fcfaa403f70 @ 0009 000a:
-            RIGHT 0x7fcfaa403f30 @ 000a 000a: op=91
-          LEFT 0x7fcfaa403fb0 @ 0009 000b: op=81
-         LEFT 0x7fcfaa404040 @ 0009 000c: op=a2 arg=f6 rel argaddr=0x7fcfaa403b60
-          RIGHT 0x7fcfaa404000 @ 000e 000e: op=f8
-        LEFT 0x7fcfaa404230 @ 0009 000f:
-            LEFT 0x7fcfaa4040a0 @ 000f 000f: op=3f
-           LEFT 0x7fcfaa404120 @ 000f 0010:
-            RIGHT 0x7fcfaa4040e0 @ 0010 0010: op=92
-          LEFT 0x7fcfaa404160 @ 000f 0011: op=81
-         RIGHT 0x7fcfaa4041f0 @ 000f 0012: op=a2 arg=f0 rel argaddr=0x7fcfaa403b60
-          RIGHT 0x7fcfaa4041b0 @ 0014 0014: op=f8
-       LEFT 0x7fcfaa404270 @ 0009 0015: op=80
-      RIGHT 0x7fcfaa4042b0 @ 0009 0016: op=9b
- LEFT 0x7fcfaa405d60 @ 0000 0017:
-    LEFT 0x7fcfaa405c60 @ 0017 0017: op=f3
-   LEFT 0x7fcfaa405ca0 @ 0017 0018:
-               LEFT 0x7fcfaa4045e0 @ 0018 0018:
-                 LEFT 0x7fcfaa404560 @ 0018 0018: op=91
-                RIGHT 0x7fcfaa4045a0 @ 0018 0019:
-                 RIGHT 0x7fcfaa404520 @ 0019 0019: op=40
-              LEFT 0x7fcfaa404700 @ 0018 001a:
-                LEFT 0x7fcfaa404680 @ 001a 001a: op=00
-               RIGHT 0x7fcfaa4046c0 @ 001a 001b:
-                RIGHT 0x7fcfaa404630 @ 001b 001b: op=41
-             LEFT 0x7fcfaa404890 @ 0018 001c:
-                LEFT 0x7fcfaa404750 @ 001c 001c: op=01
-               LEFT 0x7fcfaa404810 @ 001c 001d:
-                 LEFT 0x7fcfaa404790 @ 001d 001d: op=91
-                RIGHT 0x7fcfaa4047d0 @ 001d 001e: op=80
-              RIGHT 0x7fcfaa404850 @ 001c 001f: op=41
-            LEFT 0x7fcfaa404a70 @ 0018 0020:
-                LEFT 0x7fcfaa404930 @ 0020 0020: op=01
-               LEFT 0x7fcfaa4049b0 @ 0020 0021:
-                RIGHT 0x7fcfaa404970 @ 0021 0021: op=9a arg=01f4
-              LEFT 0x7fcfaa4049f0 @ 0020 0024: op=82
-             RIGHT 0x7fcfaa404a30 @ 0020 0025:
-              RIGHT 0x7fcfaa4048e0 @ 0025 0025: op=42
-           LEFT 0x7fcfaa404bd0 @ 0018 0026:
-              LEFT 0x7fcfaa404b10 @ 0026 0026: op=02
-             LEFT 0x7fcfaa404b50 @ 0026 0027: op=8d
-            RIGHT 0x7fcfaa404b90 @ 0026 0028:
-             RIGHT 0x7fcfaa404ac0 @ 0028 0028: op=43
-          LEFT 0x7fcfaa404ea0 @ 0018 0029:
-                LEFT 0x7fcfaa404c10 @ 0029 0029: op=91
-               LEFT 0x7fcfaa404d50 @ 0029 002a:
-                  LEFT 0x7fcfaa404c50 @ 002a 002a: op=91
-                 LEFT 0x7fcfaa404cd0 @ 002a 002b:
-                  RIGHT 0x7fcfaa404c90 @ 002b 002b: op=92
-                RIGHT 0x7fcfaa404d10 @ 002a 002c: op=82
-              LEFT 0x7fcfaa404d90 @ 0029 002d: op=80
-             LEFT 0x7fcfaa404de0 @ 0029 002e: op=91
-            LEFT 0x7fcfaa404e20 @ 0029 002f: op=b1
-           RIGHT 0x7fcfaa404e60 @ 0029 0030: op=9d
-         LEFT 0x7fcfaa4051a0 @ 0018 0031:
-               LEFT 0x7fcfaa404ef0 @ 0031 0031: op=00
-              LEFT 0x7fcfaa405050 @ 0031 0032:
-                 LEFT 0x7fcfaa404f40 @ 0032 0032: op=00
-                LEFT 0x7fcfaa404fd0 @ 0032 0033:
-                 RIGHT 0x7fcfaa404f90 @ 0033 0033: op=01
-               RIGHT 0x7fcfaa405010 @ 0032 0034: op=82
-             LEFT 0x7fcfaa405090 @ 0031 0035: op=80
-            LEFT 0x7fcfaa4050e0 @ 0031 0036: op=91
-           LEFT 0x7fcfaa405120 @ 0031 0037: op=b1
-          RIGHT 0x7fcfaa405160 @ 0031 0038: op=9d
-        LEFT 0x7fcfaa4053d0 @ 0018 0039:
-              LEFT 0x7fcfaa4051f0 @ 0039 0039: op=02
-             LEFT 0x7fcfaa405280 @ 0039 003a:
-              RIGHT 0x7fcfaa405240 @ 003a 003a: op=e0 arg=00 argaddr=0x7fcfaa403a20
-            LEFT 0x7fcfaa4052c0 @ 0039 003c: op=83
-           LEFT 0x7fcfaa405310 @ 0039 003d: op=91
-          LEFT 0x7fcfaa405350 @ 0039 003e: op=b1
-         RIGHT 0x7fcfaa405390 @ 0039 003f: op=9d
-       LEFT 0x7fcfaa4055f0 @ 0018 0040:
-             LEFT 0x7fcfaa405410 @ 0040 0040: op=9a arg=7fff
-            LEFT 0x7fcfaa4054a0 @ 0040 0043:
-             RIGHT 0x7fcfaa405460 @ 0043 0043: op=03
-           LEFT 0x7fcfaa4054e0 @ 0040 0044: op=83
-          LEFT 0x7fcfaa405530 @ 0040 0045: op=91
-         LEFT 0x7fcfaa405570 @ 0040 0046: op=b1
-        RIGHT 0x7fcfaa4055b0 @ 0040 0047: op=9d
-      LEFT 0x7fcfaa405810 @ 0018 0048:
-            LEFT 0x7fcfaa405630 @ 0048 0048: op=9a arg=ffff8001
-           LEFT 0x7fcfaa4056c0 @ 0048 004b:
-            RIGHT 0x7fcfaa405680 @ 004b 004b: op=02
-          LEFT 0x7fcfaa405700 @ 0048 004c: op=83
-         LEFT 0x7fcfaa405750 @ 0048 004d: op=91
-        LEFT 0x7fcfaa405790 @ 0048 004e: op=b1
-       RIGHT 0x7fcfaa4057d0 @ 0048 004f: op=9d
-     LEFT 0x7fcfaa405a30 @ 0018 0050:
-           LEFT 0x7fcfaa405850 @ 0050 0050: op=9a arg=ffff8001
-          LEFT 0x7fcfaa4058e0 @ 0050 0053:
-           RIGHT 0x7fcfaa4058a0 @ 0053 0053: op=03
-         LEFT 0x7fcfaa405920 @ 0050 0054: op=83
-        LEFT 0x7fcfaa405970 @ 0050 0055: op=91
-       LEFT 0x7fcfaa4059b0 @ 0050 0056: op=b1
-      RIGHT 0x7fcfaa4059f0 @ 0050 0057: op=9d
-    RIGHT 0x7fcfaa405c20 @ 0018 0058:
-         LEFT 0x7fcfaa405a80 @ 0058 0058: op=98 arg=06
-        LEFT 0x7fcfaa405b10 @ 0058 005a: op=a2 arg=a8 rel argaddr=0x7fcfaa404370
-         RIGHT 0x7fcfaa405ad0 @ 005c 005c: op=f8
-       LEFT 0x7fcfaa405b60 @ 0058 005d: op=91
-      LEFT 0x7fcfaa405ba0 @ 0058 005e: op=b1
-     RIGHT 0x7fcfaa405be0 @ 0058 005f: op=9d
-  RIGHT 0x7fcfaa405ce0 @ 0017 0060: sym=main op=9c
-ROOT 0x7fcfaa405df0 @ 0000 0061:
- RIGHT 0x7fcfaa405da0 @ 0061 0061: sym=_end
+    LEFT 0x7fe919403aa0 @ 0000 0000:
+     RIGHT 0x7fe919403a20 @ 0000 0000: sym=ghundret datalen=2 initdata=0064
+   LEFT 0x7fe919403ba0 @ 0000 0002:
+  LEFT 0x7fe9194043c0 @ 0000 0002:
+    LEFT 0x7fe919403b60 @ 0002 0002:
+   RIGHT 0x7fe919404370 @ 0002 0002: sym=fibonacci
+    RIGHT 0x7fe919404330 @ 0002 0002:
+      LEFT 0x7fe919403e90 @ 0002 0002:
+          LEFT 0x7fe919403c40 @ 0002 0002: op=3f
+         LEFT 0x7fe919403cc0 @ 0002 0003:
+          RIGHT 0x7fe919403c80 @ 0003 0003: op=92
+        LEFT 0x7fe919403d00 @ 0002 0004: op=a8
+       RIGHT 0x7fe919403e50 @ 0002 0005: op=a6 arg=04 rel argaddr=0x7fe919403dd0
+          LEFT 0x7fe919403d50 @ 0007 0007: op=3f
+         LEFT 0x7fe919403d90 @ 0007 0008: op=9b
+        RIGHT 0x7fe919403e10 @ 0007 0009:
+         RIGHT 0x7fe919403dd0 @ 0009 0009:
+     RIGHT 0x7fe9194042f0 @ 0002 0009:
+            LEFT 0x7fe919403ef0 @ 0009 0009: op=3f
+           LEFT 0x7fe919403f70 @ 0009 000a:
+            RIGHT 0x7fe919403f30 @ 000a 000a: op=91
+          LEFT 0x7fe919403fb0 @ 0009 000b: op=81
+         LEFT 0x7fe919404040 @ 0009 000c: op=a2 arg=f6 rel argaddr=0x7fe919403b60
+          RIGHT 0x7fe919404000 @ 000e 000e: op=f8
+        LEFT 0x7fe919404230 @ 0009 000f:
+            LEFT 0x7fe9194040a0 @ 000f 000f: op=3f
+           LEFT 0x7fe919404120 @ 000f 0010:
+            RIGHT 0x7fe9194040e0 @ 0010 0010: op=92
+          LEFT 0x7fe919404160 @ 000f 0011: op=81
+         RIGHT 0x7fe9194041f0 @ 000f 0012: op=a2 arg=f0 rel argaddr=0x7fe919403b60
+          RIGHT 0x7fe9194041b0 @ 0014 0014: op=f8
+       LEFT 0x7fe919404270 @ 0009 0015: op=80
+      RIGHT 0x7fe9194042b0 @ 0009 0016: op=9b
+ LEFT 0x7fe919405d60 @ 0000 0017:
+    LEFT 0x7fe919405c60 @ 0017 0017: op=f3
+   LEFT 0x7fe919405ca0 @ 0017 0018:
+               LEFT 0x7fe9194045e0 @ 0018 0018:
+                 LEFT 0x7fe919404560 @ 0018 0018: op=91
+                RIGHT 0x7fe9194045a0 @ 0018 0019:
+                 RIGHT 0x7fe919404520 @ 0019 0019: op=40
+              LEFT 0x7fe919404700 @ 0018 001a:
+                LEFT 0x7fe919404680 @ 001a 001a: op=00
+               RIGHT 0x7fe9194046c0 @ 001a 001b:
+                RIGHT 0x7fe919404630 @ 001b 001b: op=41
+             LEFT 0x7fe919404890 @ 0018 001c:
+                LEFT 0x7fe919404750 @ 001c 001c: op=01
+               LEFT 0x7fe919404810 @ 001c 001d:
+                 LEFT 0x7fe919404790 @ 001d 001d: op=91
+                RIGHT 0x7fe9194047d0 @ 001d 001e: op=80
+              RIGHT 0x7fe919404850 @ 001c 001f: op=41
+            LEFT 0x7fe919404a70 @ 0018 0020:
+                LEFT 0x7fe919404930 @ 0020 0020: op=01
+               LEFT 0x7fe9194049b0 @ 0020 0021:
+                RIGHT 0x7fe919404970 @ 0021 0021: op=9a arg=01f4
+              LEFT 0x7fe9194049f0 @ 0020 0024: op=82
+             RIGHT 0x7fe919404a30 @ 0020 0025:
+              RIGHT 0x7fe9194048e0 @ 0025 0025: op=42
+           LEFT 0x7fe919404bd0 @ 0018 0026:
+              LEFT 0x7fe919404b10 @ 0026 0026: op=02
+             LEFT 0x7fe919404b50 @ 0026 0027: op=8d
+            RIGHT 0x7fe919404b90 @ 0026 0028:
+             RIGHT 0x7fe919404ac0 @ 0028 0028: op=43
+          LEFT 0x7fe919404ea0 @ 0018 0029:
+                LEFT 0x7fe919404c10 @ 0029 0029: op=91
+               LEFT 0x7fe919404d50 @ 0029 002a:
+                  LEFT 0x7fe919404c50 @ 002a 002a: op=91
+                 LEFT 0x7fe919404cd0 @ 002a 002b:
+                  RIGHT 0x7fe919404c90 @ 002b 002b: op=92
+                RIGHT 0x7fe919404d10 @ 002a 002c: op=82
+              LEFT 0x7fe919404d90 @ 0029 002d: op=80
+             LEFT 0x7fe919404de0 @ 0029 002e: op=91
+            LEFT 0x7fe919404e20 @ 0029 002f: op=b1
+           RIGHT 0x7fe919404e60 @ 0029 0030: op=9d
+         LEFT 0x7fe9194051a0 @ 0018 0031:
+               LEFT 0x7fe919404ef0 @ 0031 0031: op=00
+              LEFT 0x7fe919405050 @ 0031 0032:
+                 LEFT 0x7fe919404f40 @ 0032 0032: op=00
+                LEFT 0x7fe919404fd0 @ 0032 0033:
+                 RIGHT 0x7fe919404f90 @ 0033 0033: op=01
+               RIGHT 0x7fe919405010 @ 0032 0034: op=82
+             LEFT 0x7fe919405090 @ 0031 0035: op=80
+            LEFT 0x7fe9194050e0 @ 0031 0036: op=91
+           LEFT 0x7fe919405120 @ 0031 0037: op=b1
+          RIGHT 0x7fe919405160 @ 0031 0038: op=9d
+        LEFT 0x7fe9194053d0 @ 0018 0039:
+              LEFT 0x7fe9194051f0 @ 0039 0039: op=02
+             LEFT 0x7fe919405280 @ 0039 003a:
+              RIGHT 0x7fe919405240 @ 003a 003a: op=e0 arg=00 argaddr=0x7fe919403a20
+            LEFT 0x7fe9194052c0 @ 0039 003c: op=83
+           LEFT 0x7fe919405310 @ 0039 003d: op=91
+          LEFT 0x7fe919405350 @ 0039 003e: op=b1
+         RIGHT 0x7fe919405390 @ 0039 003f: op=9d
+       LEFT 0x7fe9194055f0 @ 0018 0040:
+             LEFT 0x7fe919405410 @ 0040 0040: op=9a arg=7fff
+            LEFT 0x7fe9194054a0 @ 0040 0043:
+             RIGHT 0x7fe919405460 @ 0043 0043: op=03
+           LEFT 0x7fe9194054e0 @ 0040 0044: op=83
+          LEFT 0x7fe919405530 @ 0040 0045: op=91
+         LEFT 0x7fe919405570 @ 0040 0046: op=b1
+        RIGHT 0x7fe9194055b0 @ 0040 0047: op=9d
+      LEFT 0x7fe919405810 @ 0018 0048:
+            LEFT 0x7fe919405630 @ 0048 0048: op=9a arg=ffff8001
+           LEFT 0x7fe9194056c0 @ 0048 004b:
+            RIGHT 0x7fe919405680 @ 004b 004b: op=02
+          LEFT 0x7fe919405700 @ 0048 004c: op=83
+         LEFT 0x7fe919405750 @ 0048 004d: op=91
+        LEFT 0x7fe919405790 @ 0048 004e: op=b1
+       RIGHT 0x7fe9194057d0 @ 0048 004f: op=9d
+     LEFT 0x7fe919405a30 @ 0018 0050:
+           LEFT 0x7fe919405850 @ 0050 0050: op=9a arg=ffff8001
+          LEFT 0x7fe9194058e0 @ 0050 0053:
+           RIGHT 0x7fe9194058a0 @ 0053 0053: op=03
+         LEFT 0x7fe919405920 @ 0050 0054: op=83
+        LEFT 0x7fe919405970 @ 0050 0055: op=91
+       LEFT 0x7fe9194059b0 @ 0050 0056: op=b1
+      RIGHT 0x7fe9194059f0 @ 0050 0057: op=9d
+    RIGHT 0x7fe919405c20 @ 0018 0058:
+         LEFT 0x7fe919405a80 @ 0058 0058: op=98 arg=06
+        LEFT 0x7fe919405b10 @ 0058 005a: op=a2 arg=a8 rel argaddr=0x7fe919404370
+         RIGHT 0x7fe919405ad0 @ 005c 005c: op=f8
+       LEFT 0x7fe919405b60 @ 0058 005d: op=91
+      LEFT 0x7fe919405ba0 @ 0058 005e: op=b1
+     RIGHT 0x7fe919405be0 @ 0058 005f: op=9d
+  RIGHT 0x7fe919405ce0 @ 0017 0060: sym=main op=9c
+ROOT 0x7fe919405df0 @ 0000 0061:
+ RIGHT 0x7fe919405da0 @ 0061 0061: sym=_end

@@ -1,28 +1,22 @@
- LEFT 0x7fb80a404180 @ 0000 0000:
-    LEFT 0x7fb80a404080 @ 0000 0000: op=f1
-   LEFT 0x7fb80a4040c0 @ 0000 0001:
-        LEFT 0x7fb80a403b60 @ 0001 0001:
-          LEFT 0x7fb80a403ae0 @ 0001 0001: op=9a arg=03e8
-         RIGHT 0x7fb80a403b20 @ 0001 0004:
-          RIGHT 0x7fb80a403aa0 @ 0004 0004: op=40
-       LEFT 0x7fb80a403c70 @ 0001 0005:
-         LEFT 0x7fb80a403bf0 @ 0005 0005: op=98 arg=0e
-        RIGHT 0x7fb80a403c30 @ 0005 0007:
-         RIGHT 0x7fb80a403bb0 @ 0007 0007: op=41
-      LEFT 0x7fb80a403dd0 @ 0001 0008:
-          LEFT 0x7fb80a403cc0 @ 0008 0008: op=00
-         LEFT 0x7fb80a403d10 @ 0008 0009: op=91
-        LEFT 0x7fb80a403d50 @ 0008 000a: op=b1
-       RIGHT 0x7fb80a403d90 @ 0008 000b: op=9d
-     LEFT 0x7fb80a403f30 @ 0001 000c:
-         LEFT 0x7fb80a403e20 @ 000c 000c: op=01
-        LEFT 0x7fb80a403e70 @ 000c 000d: op=91
-       LEFT 0x7fb80a403eb0 @ 000c 000e: op=b1
-      RIGHT 0x7fb80a403ef0 @ 000c 000f: op=9d
-    RIGHT 0x7fb80a404040 @ 0001 0010:
-       LEFT 0x7fb80a403f80 @ 0010 0010: op=90
-      LEFT 0x7fb80a403fc0 @ 0010 0011: op=b0
-     RIGHT 0x7fb80a404000 @ 0010 0012: op=9d
-  RIGHT 0x7fb80a404100 @ 0000 0013: sym=main op=9c
-ROOT 0x7fb80a404210 @ 0000 0014:
- RIGHT 0x7fb80a4041c0 @ 0014 0014: sym=_end
+  LEFT 0x7fca32c03c70 @ 0000 0000:
+    LEFT 0x7fca32c03bb0 @ 0000 0000:
+     RIGHT 0x7fca32c03b70 @ 0000 0000:
+         LEFT 0x7fca32c03a60 @ 0000 0000: op=3f
+        LEFT 0x7fca32c03ab0 @ 0000 0001: op=91
+       LEFT 0x7fca32c03af0 @ 0000 0002: op=b1
+      RIGHT 0x7fca32c03b30 @ 0000 0003: op=9d
+   RIGHT 0x7fca32c03bf0 @ 0000 0004: sym=pin_mode op=9c
+ LEFT 0x7fca32c03ff0 @ 0000 0005:
+   LEFT 0x7fca32c03f30 @ 0005 0005:
+     LEFT 0x7fca32c03de0 @ 0005 0005:
+        LEFT 0x7fca32c03cd0 @ 0005 0005: op=98 arg=23
+       LEFT 0x7fca32c03d60 @ 0005 0007: op=a2 arg=f9 rel argaddr=0x7fca32c03bf0
+        RIGHT 0x7fca32c03d20 @ 0009 0009: op=f8
+      RIGHT 0x7fca32c03da0 @ 0005 000a: op=9d
+    RIGHT 0x7fca32c03ef0 @ 0005 000b:
+       LEFT 0x7fca32c03e30 @ 000b 000b: op=90
+      LEFT 0x7fca32c03e70 @ 000b 000c: op=b0
+     RIGHT 0x7fca32c03eb0 @ 000b 000d: op=9d
+  RIGHT 0x7fca32c03f70 @ 0005 000e: sym=main op=9c
+ROOT 0x7fca32c04080 @ 0000 000f:
+ RIGHT 0x7fca32c04030 @ 000f 000f: sym=_end

@@ -13,13 +13,15 @@ char SOURCE[SOURCE_SIZE] = {
 
 
 int main () {
-  if (!compiler()) {
+  int start = 0;
+  if (!compiler(&start)) {
     printf("Successful compilation.\n");
 
     printf("(%d bytes)\n", vm_mem_ptr);
+    printf("(entry: %d)\n", start);
     int i;
     for (i = 0; i < vm_mem_ptr; i++) {
-      printf("0x%02x ", vm_mem[i]);
+      printf("0x%02x ", vm_read(i));
     }
 
     return 0;

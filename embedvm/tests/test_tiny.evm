@@ -1,9 +1,8 @@
+function pin_mode (pin) {
+  $uf1(pin); // 0 = output, 1 = input
+}
+
 function main() {
-  local i;
-  local j;
-  i = 1000;
-  j = 14;
-  $uf1(i);
-  $uf1(j);
+  pin_mode(35);
   $uf0();
 }
